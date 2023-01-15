@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\Application;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
+$containerBuilder = new ContainerBuilder();
+$loader = new YamlFileLoader($containerBuilder, new FileLocator([
+        realpath(__DIR__ . '/../config'),
+        realpath(__DIR__ . '/..'),
+    ]
+));
+$loader->load('services.yaml');
+$containerBuilder->compile();
+
+$input = new ArgvInput();
+
+
+$application = new Application($containerBuilder);
+$application->run($input);

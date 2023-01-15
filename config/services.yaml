@@ -1,0 +1,27 @@
+imports:
+    - { resource: ../config.yaml }
+
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $inputs: '%inputs%'
+            $outputs: '%outputs%'
+            $rules: '%rules%'
+
+    App\Application:
+        autowire: true
+        autoconfigure: true
+
+    App\Command\:
+        resource: 'src/Command/*'
+        public: true
+
+    App\Manager\:
+        resource: 'src/Manager/*'
+
+    App\Factory\:
+        resource: 'src/Factory/*'
