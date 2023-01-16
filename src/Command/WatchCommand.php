@@ -52,7 +52,7 @@ class WatchCommand extends Command implements SignalableCommandInterface
             sleep($input->getArgument('interval'));
         }
 
-        $output->writeln('received signal to terminate');
+        $output->writeln(sprintf('received signal to terminate (%d)', $this->terminated));
         $this->terminateSubRoutine->execute($input, $output);
 
         return 0;
@@ -67,6 +67,6 @@ class WatchCommand extends Command implements SignalableCommandInterface
 
     public function handleSignal(int $signal): void
     {
-        $this->terminated = true;
+        $this->terminated = $signal;
     }
 }
