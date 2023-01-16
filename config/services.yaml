@@ -1,7 +1,7 @@
 imports:
-    - { resource: ../config.yaml }
-
-parameters:
+    - { resource: ../inputs.yaml }
+    - { resource: ../outputs.yaml }
+    - { resource: ../rules.yaml }
 
 services:
     _defaults:

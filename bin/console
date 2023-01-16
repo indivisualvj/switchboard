@@ -8,6 +8,16 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Dotenv\Dotenv;
+
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__.'/../.env');
+
+// You can also load several files
+$settingsFile = __DIR__.'/../settings.env';
+if (file_exists($settingsFile)) {
+    $dotenv->overload($settingsFile);
+}
 
 $containerBuilder = new ContainerBuilder();
 $loader = new YamlFileLoader($containerBuilder, new FileLocator([
@@ -16,7 +26,7 @@ $loader = new YamlFileLoader($containerBuilder, new FileLocator([
     ]
 ));
 $loader->load('services.yaml');
-$containerBuilder->compile();
+$containerBuilder->compile(true);
 
 $input = new ArgvInput();
 
