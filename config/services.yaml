@@ -25,3 +25,6 @@ services:
 
     App\Factory\:
         resource: 'src/Factory/*'
+
+    App\SubRoutine\:
+        resource: 'src/SubRoutine/*'

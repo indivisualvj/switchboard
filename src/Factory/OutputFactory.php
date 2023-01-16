@@ -11,6 +11,6 @@ class OutputFactory
     {
         $className = StringUtil::createClassName($config['type'], 'App\Output\\', 'Output');
 
-        return new $className($config['command'], $config);
+        return new $className($config);
     }
 }

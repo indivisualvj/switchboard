@@ -9,7 +9,7 @@ use Symfony\Component\Process\Process;
 class CommandOutput implements OutputInterface
 {
     public function __construct(
-        private readonly array $command,
+        private readonly array $config,
     )
     {
     }
@@ -28,7 +28,7 @@ class CommandOutput implements OutputInterface
      */
     private function execute(?\Symfony\Component\Console\Output\OutputInterface $output): int
     {
-        $process = new Process($this->command);
+        $process = new Process($this->getCommand());
         $process->setTimeout(0);
         $process->setTty(false);
         $process->start();
@@ -43,10 +43,20 @@ class CommandOutput implements OutputInterface
         }
 
         if (!$process->isSuccessful()) {
-            throw new Exception(sprintf('Command failed [%s]', implode(' ', $this->command)));
+            throw new Exception(sprintf('Command failed [%s]', implode(' ', $this->getCommand())));
         }
 
         return 0;
+    }
+
+    private function getCommand(): array
+    {
+        return $this->config['command'] ?? [];
+    }
+
+    public function runOnTermSignal(): bool
+    {
+        return $this->config['run_on_term_signal'] ?? false;
     }
 
 }

@@ -24,9 +24,8 @@ class Application
      */
     public function run(InputInterface $input): int
     {
-        /** @var Command $command */
-        $command = $this->container->get('App\Command\RunCommand');
-        $this->application->add($command);
+        $this->application->add($this->container->get('App\Command\RunCommand'));
+        $this->application->add($this->container->get('App\Command\WatchCommand'));
 
         return $this->application->run($input);
     }
