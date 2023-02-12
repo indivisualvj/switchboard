@@ -6,7 +6,6 @@ class FuzzyJsonNormalizer extends AbstractNormalizer
 {
     public function normalize($value)
     {
-        $result = null;
         if ($value) {
             $start = strpos($value, '{');
             $end = strrpos($value, '}');
@@ -14,13 +13,12 @@ class FuzzyJsonNormalizer extends AbstractNormalizer
             $value = substr($value, $start, $end);
 
             $result = json_decode($value, true);
+            if ($this->getKey() && isset($result[$this->getKey()])) {
+                return $result[$this->getKey()];
+            }
         }
 
-        if ($this->getKey()) {
-            return $result[$this->getKey()];
-        }
-
-        return $result;
+        return null;
     }
 
     private function getKey(): ?string
