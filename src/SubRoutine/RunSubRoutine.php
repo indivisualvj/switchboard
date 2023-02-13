@@ -3,6 +3,7 @@
 namespace App\SubRoutine;
 
 use App\Manager\InputManager;
+use App\Manager\NormalizerManager;
 use App\Manager\OutputManager;
 use App\Manager\RuleManager;
 use App\Rule\RuleInterface;
@@ -14,7 +15,8 @@ class RunSubRoutine implements SubRoutineInterface
     public function __construct(
         private readonly RuleManager $ruleManager,
         private readonly InputManager $inputManager,
-        private readonly OutputManager$outputManager,
+        private readonly OutputManager $outputManager,
+        private readonly NormalizerManager $normalizerManager,
     ) {
     }
 
@@ -24,8 +26,11 @@ class RunSubRoutine implements SubRoutineInterface
     {
         $values = [];
         $inputs = $this->inputManager->getInputs();
+
+        /** @var  $input \App\Input\InputInterface */
         foreach ($inputs as $key => $input) {
-            $values[$key] = $input->read($output);
+            $config = $input->getConfig();
+            $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $input->read($output), $values);
             $output->writeln(sprintf('reading from %s is: %s', $key, $values[$key]));
         }
         $output->writeln(str_repeat('#', self::LINE_LENGTH));

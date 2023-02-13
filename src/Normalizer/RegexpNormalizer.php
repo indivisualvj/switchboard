@@ -4,7 +4,7 @@ namespace App\Normalizer;
 
 class RegexpNormalizer extends AbstractNormalizer
 {
-    public function normalize($value)
+    public function normalize($value, array $values)
     {
         return preg_replace($this->getPattern(), $this->getReplacement(), $value);
     }

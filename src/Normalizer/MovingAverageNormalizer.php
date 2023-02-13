@@ -6,7 +6,7 @@ use App\Application;
 
 class MovingAverageNormalizer extends AbstractNormalizer
 {
-    public function normalize($value)
+    public function normalize($value, array $values)
     {
         $values = $this->getValues();
         $values[] = $value;

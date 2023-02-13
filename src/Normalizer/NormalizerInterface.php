@@ -4,6 +4,6 @@ namespace App\Normalizer;
 
 interface NormalizerInterface
 {
-    public function normalize($value);
+    public function normalize($value, array $values);
 
 }

@@ -13,17 +13,13 @@ class NormalizerFactory
             return new $className($config);
     }
 
-    public function createAll($config): array
+    public function createAll(array $config): array
     {
-        if (isset($config['normalizers'])) {
-            $normalizers = [];
-            foreach ($config['normalizers'] as $key => $options) {
-                $normalizers[$key] = $this->createNew($key, $options);
-            }
-
-            return $normalizers;
+        $normalizers = [];
+        foreach ($config as $key => $options) {
+            $normalizers[$key] = $this->createNew($key, $options);
         }
 
-        return [];
+        return $normalizers;
     }
 }

@@ -10,7 +10,7 @@ class AbstractNormalizer implements NormalizerInterface
 
     }
 
-    public function normalize($value)
+    public function normalize($value, array $values)
     {
         return $value;
     }

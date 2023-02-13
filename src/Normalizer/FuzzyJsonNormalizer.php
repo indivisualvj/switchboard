@@ -4,7 +4,7 @@ namespace App\Normalizer;
 
 class FuzzyJsonNormalizer extends AbstractNormalizer
 {
-    public function normalize($value)
+    public function normalize($value, array $values)
     {
         if ($value) {
             $start = strpos($value, '{');

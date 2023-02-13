@@ -8,16 +8,8 @@ use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
-class CommandInput implements InputInterface
+class CommandInput extends AbstractInput
 {
-    public function __construct(
-        private readonly array $command,
-        private readonly array $normalizers,
-        private readonly array $config,
-    )
-    {
-    }
-
     /**
      * @throws Exception
      */
@@ -32,7 +24,7 @@ class CommandInput implements InputInterface
      */
     private function execute(?OutputInterface $output)
     {
-        $process = new Process($this->command);
+        $process = new Process($this->getCommand());
         $process->setTimeout(0);
         $process->setTty(false);
         $process->start();
@@ -48,19 +40,18 @@ class CommandInput implements InputInterface
         }
 
         if (!$process->isSuccessful()) {
-            throw new Exception(sprintf('Command failed [%s]', implode(' ', $this->command)));
+            throw new Exception(sprintf('Command failed [%s]', implode(' ', $this->getCommand())));
         }
 
         if ($result) {
-            /** @var NormalizerInterface $normalizer */
-            foreach ($this->normalizers as $normalizer) {
-                $result = $normalizer->normalize($result);
-            }
-
             return $result;
         }
 
         return $this->config['default'];
     }
 
+    private function getCommand(): array
+    {
+        return $this->config['command'];
+    }
 }
