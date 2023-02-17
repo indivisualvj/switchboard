@@ -5,7 +5,7 @@ namespace App\Rule;
 class ComparisonRule extends AbstractRule
 {
     const GREATER = 'GREATER';
-    const LOWER = 'LOWER';
+    const SMALLER = 'SMALLER';
     const EQUAL = 'EQUAL';
 
     public function execute($value): bool
@@ -32,7 +32,7 @@ class ComparisonRule extends AbstractRule
     private function evaluate($valueA, $operator, $valueB): bool
     {
         switch ($operator) {
-            case self::LOWER:
+            case self::SMALLER:
                 return $valueA < $valueB;
             case self::GREATER:
                 return $valueA > $valueB;
