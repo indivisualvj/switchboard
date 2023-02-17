@@ -2,20 +2,17 @@
 
 namespace App\Rule;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 class ComparisonRule extends AbstractRule
 {
     const GREATER = 'GREATER';
     const SMALLER = 'SMALLER';
     const EQUAL = 'EQUAL';
 
-    public function execute($value): bool
-    {
-        return $this->evaluate($value, $this->getOperator(), $this->getValue());
-    }
-
     public function reason($value): string
     {
-        $result = $this->evaluate($value, $this->getOperator(), $this->getValue());
+        $result = $this->evaluate($value);
         return sprintf('%s from %s is %s %s (%s)', $value, $this->getInputKey(), $this->getOperator(), $this->getValue(), $result?'true':'false');
     }
 
@@ -29,15 +26,17 @@ class ComparisonRule extends AbstractRule
         return $this->config['value'];
     }
 
-    private function evaluate($valueA, $operator, $valueB): bool
+    public function evaluate($value, ?OutputInterface $output = null): bool
     {
+        $operator = $this->getOperator();
+        $operand = $this->getValue();
         switch ($operator) {
             case self::SMALLER:
-                return $valueA < $valueB;
+                return $value < $operand;
             case self::GREATER:
-                return $valueA > $valueB;
+                return $value > $operand;
             case self::EQUAL:
-                return $valueA == $valueB;
+                return $value == $operand;
         }
     }
 }

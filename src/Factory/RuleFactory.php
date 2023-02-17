@@ -2,8 +2,8 @@
 
 namespace App\Factory;
 
-use App\Rule\RuleInterface;
 use App\Rule\RuleSetInterface;
+use App\Rule\RuleInterface;
 use App\Util\StringUtil;
 
 class RuleFactory

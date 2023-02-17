@@ -2,6 +2,8 @@
 
 namespace App\Rule;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 class AbstractRule implements RuleInterface
 {
     public function __construct(
@@ -10,7 +12,20 @@ class AbstractRule implements RuleInterface
 
     }
 
-    public function execute($value): bool
+    public function execute($value, ?OutputInterface $output = null): array
+    {
+        $result = $this->evaluate($value);
+        if ($result) {
+            $outputKeys = $this->getTrueOutputs();
+
+        } else {
+            $outputKeys = $this->getFalseOutputs();
+        }
+
+        return $outputKeys;
+    }
+
+    public function evaluate($value, ?OutputInterface $output = null): bool
     {
         return false;
     }
