@@ -4,7 +4,6 @@ namespace App\Manager;
 
 use App\Factory\OutputFactory;
 use App\Output\OutputInterface;
-use App\Util\StringUtil;
 
 class OutputManager
 {

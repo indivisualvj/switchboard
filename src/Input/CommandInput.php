@@ -2,7 +2,6 @@
 
 namespace App\Input;
 
-use App\Normalizer\NormalizerInterface;
 use Exception;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

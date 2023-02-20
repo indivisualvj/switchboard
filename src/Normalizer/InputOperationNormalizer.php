@@ -2,8 +2,6 @@
 
 namespace App\Normalizer;
 
-use App\Application;
-
 class InputOperationNormalizer extends AbstractNormalizer
 {
     const OPERATOR_ADD = '+';

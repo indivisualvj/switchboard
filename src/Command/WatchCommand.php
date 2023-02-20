@@ -2,21 +2,15 @@
 
 namespace App\Command;
 
-use App\Manager\InputManager;
-use App\Manager\OutputManager;
 use App\Manager\RuleManager;
-use App\Rule\RuleInterface;
 use App\SubRoutine\RunSubRoutine;
 use App\SubRoutine\TerminateSubRoutine;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
-use Symfony\Component\Console\Formatter\OutputFormatter;
-use Symfony\Component\Console\Formatter\OutputFormatterStyleStack;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 
 class WatchCommand extends Command implements SignalableCommandInterface
 {
