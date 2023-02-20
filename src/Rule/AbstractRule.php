@@ -7,6 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class AbstractRule implements RuleInterface
 {
     public function __construct(
+        protected string $name,
         protected array $config,
     ) {
 
@@ -50,7 +51,7 @@ class AbstractRule implements RuleInterface
         return $this->config['outputs'][$key] ?? [];
     }
 
-    public function reason($value): string
+    public function result($value): string
     {
         return 'n/a';
     }

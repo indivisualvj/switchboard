@@ -8,11 +8,11 @@ use App\Util\StringUtil;
 
 class RuleFactory
 {
-    public function createNew($config): RuleInterface
+    public function createNew($name, $config): RuleInterface
     {
         $className = StringUtil::createClassName($config['type'], 'App\Rule\\', 'Rule');
 
-        $rule = new $className($config);
+        $rule = new $className($name, $config);
 
         if ($rule instanceof RuleSetInterface) {
             $rule->setRules($this->createAll($config['rules']));
@@ -25,7 +25,7 @@ class RuleFactory
     {
         $result = [];
         foreach ($rules as $key => $config) {
-            $result[$key] = $this->createNew($config);
+            $result[$key] = $this->createNew($key, $config);
         }
 
         return $result;

@@ -13,12 +13,12 @@ class RuleSetRule extends AbstractRuleSet
     private array $trueRules;
     private array $falseRules;
 
-    public function reason($value): string
+    public function result($value): string
     {
         $reasons = [];
         /** @var RuleInterface $rule */
         foreach ($this->getRules() as $key => $rule) {
-            $reasons[] = $rule->reason($value[$rule->getInputKey()] ?? $value);
+            $reasons[] = $rule->result($value[$rule->getInputKey()] ?? $value);
         }
 
         return sprintf('%s', implode(' ' . $this->getOperator() . ' ', $reasons));
@@ -35,7 +35,7 @@ class RuleSetRule extends AbstractRuleSet
         /** @var RuleInterface $rule */
         foreach ($this->getRules() as $rule) {
             $inputKey = $rule->getInputKey();
-            $result = $rule->execute($value[$inputKey] ?? $value, $output);
+            $result = $rule->evaluate($value[$inputKey] ?? $value, $output);
 
             if ($result) {
                 $this->trueRules[] = $rule;
@@ -74,27 +74,30 @@ class RuleSetRule extends AbstractRuleSet
 
     public function getTrueOutputs(): array
     {
-        $outputs = [];
+        $outputs = parent::getTrueOutputs();
 
-        /** @var RuleInterface $rule */
-        foreach ($this->trueRules as $rule) {
-            $outputs = array_merge($outputs, $rule->getTrueOutputs());
+        if (!count($outputs)) {
+            /** @var RuleInterface $rule */
+            foreach ($this->trueRules as $rule) {
+                $outputs = array_merge($outputs, $rule->getTrueOutputs());
+            }
         }
 
-        return count($outputs) ? $outputs : parent::getTrueOutputs();
+        return $outputs;
     }
 
     public function getFalseOutputs(): array
     {
+        $outputs = parent::getFalseOutputs();
 
-        $outputs = [];
-
-        /** @var RuleInterface $rule */
-        foreach ($this->falseRules as $rule) {
-            $outputs = array_merge($outputs, $rule->getFalseOutputs());
+        if (!count($outputs)) {
+            /** @var RuleInterface $rule */
+            foreach ($this->falseRules as $rule) {
+                $outputs = array_merge($outputs, $rule->getFalseOutputs());
+            }
         }
 
-        return count($outputs) ? $outputs : parent::getFalseOutputs();
+        return $outputs;
     }
 
 }

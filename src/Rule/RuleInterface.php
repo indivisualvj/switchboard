@@ -8,7 +8,7 @@ interface RuleInterface
 {
     public function execute($value, OutputInterface $output): array;
     public function evaluate($value, ?OutputInterface $output = null): bool;
-    public function reason($value): string;
+    public function result($value): string;
     public function getInputKey(): ?string;
     public function getTrueOutputs(): array;
     public function getFalseOutputs(): array;

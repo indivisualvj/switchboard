@@ -10,7 +10,7 @@ class ComparisonRule extends AbstractRule
     const SMALLER = 'SMALLER';
     const EQUAL = 'EQUAL';
 
-    public function reason($value): string
+    public function result($value): string
     {
         $result = $this->evaluate($value);
         return sprintf('%s from %s is %s %s (%s)', $value, $this->getInputKey(), $this->getOperator(), $this->getValue(), $result?'true':'false');

@@ -18,7 +18,6 @@ class OutputManager
         }
     }
 
-
     public function getOutputs(): array
     {
         return $this->outputs;
