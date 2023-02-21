@@ -15,7 +15,8 @@ class AbstractRule implements RuleInterface
 
     public function execute($value, ?OutputInterface $output = null): array
     {
-        $result = $this->evaluate($value);
+        $result = $this->evaluate($value, $output);
+
         if ($result) {
             $outputKeys = $this->getTrueOutputs();
 
