@@ -12,8 +12,6 @@ class StageRule extends AbstractRule
     {
         $stages = $this->getStages();
         $stageValue = $this->getStageValue();
-        $output->writeln(sprintf('value: %s - %s is %d', $value, $stageValue, $value-$stageValue));
-
         if ($value > 0) {
             if ($value - $stageValue > 0) {
                 self::$currentStage++;
@@ -25,9 +23,13 @@ class StageRule extends AbstractRule
             self::$currentStage = max(0, self::$currentStage);
         }
 
-        $output->writeln('current stage is: ' . self::$currentStage);
-
         return true;
+    }
+
+    public function result($value): string
+    {
+        $stageValue = $this->getStageValue();
+        return sprintf('value: %d - %d = %d / stage is now %d', $value, $stageValue, $value-$stageValue, self::$currentStage);
     }
 
     private function getStages(): int
@@ -42,11 +44,21 @@ class StageRule extends AbstractRule
 
     public function getTrueOutputs(): array
     {
-        return [];
+        $result = [];
+        $outputs = parent::getTrueOutputs();
+        foreach ($outputs as $index => $output) {
+            if ($index+1 <= self::$currentStage) {
+                $result[] = $output;
+            }
+        }
+        $outputs = $this->getFalseOutputs();
+        foreach ($outputs as $index => $output) {
+            if ($index+1 > self::$currentStage) {
+                $result[] = $output;
+            }
+        }
+
+        return $result;
     }
 
-    public function getFalseOutputs(): array
-    {
-        return [];
-    }
 }
