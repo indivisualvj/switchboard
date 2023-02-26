@@ -28,7 +28,8 @@ class CommandOutput implements OutputInterface
      */
     private function execute(?\Symfony\Component\Console\Output\OutputInterface $output): int
     {
-        $process = new Process($this->getCommand());
+        $process = Process::fromShellCommandline(implode(' ', $this->getCommand()));
+//        $process = new Process($this->getCommand());
         $process->setTimeout(0);
         $process->setTty(false);
         $process->start();
