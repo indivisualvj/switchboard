@@ -11,7 +11,7 @@ class FuzzyJsonNormalizer extends AbstractNormalizer
             $end = strrpos($value, '}');
             $end = $end-$start+1;
             $value = substr($value, $start, $end);
-
+            $value = str_replace('\'', '"', $value);
             $result = json_decode($value, true);
             if ($this->getKey() && isset($result[$this->getKey()])) {
                 return $result[$this->getKey()];

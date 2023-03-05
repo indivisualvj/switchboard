@@ -24,9 +24,7 @@ class CommandInput extends AbstractInput
     private function execute(?OutputInterface $output)
     {
         $command = implode(' ', $this->getCommand());
-        $output->writeln('exeucting: ' . $command);
         $process = Process::fromShellCommandline($command);
-//        $process = new Process($this->getCommand());
         $process->setTimeout(30);
         $process->setTty(false);
         $process->start();
