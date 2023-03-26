@@ -47,7 +47,7 @@ class CommandInput extends AbstractInput
             return $result;
         }
 
-        return $this->config['default'];
+        return $this->config['default'] ?? 'n/a';
     }
 
     private function getCommand(): array

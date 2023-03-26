@@ -8,23 +8,28 @@ services:
         autowire: true
         autoconfigure: true
         bind:
+            $kernelProjectDir: '%kernel.project_dir%'
             $inputs: '%inputs%'
             $outputs: '%outputs%'
             $rules: '%rules%'
+#
+#    App\Application:
+#        autowire: true
+#        autoconfigure: true
 
-    App\Application:
-        autowire: true
-        autoconfigure: true
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
 
     App\Command\:
-        resource: 'src/Command/*'
+        resource: '../src/Command/*'
         public: true
 
     App\Manager\:
-        resource: 'src/Manager/*'
+        resource: '../src/Manager/*'
 
     App\Factory\:
-        resource: 'src/Factory/*'
+        resource: '../src/Factory/*'
 
     App\SubRoutine\:
-        resource: 'src/SubRoutine/*'
+        resource: '../src/SubRoutine/*'

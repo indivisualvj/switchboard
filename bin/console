@@ -1,35 +1,17 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__ . '/../vendor/autoload.php';
+use App\Kernel;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-use App\Application;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\Dotenv\Dotenv;
-
-$dotenv = new Dotenv();
-$dotenv->load(__DIR__.'/../.env');
-
-// You can also load several files
-$settingsFile = __DIR__.'/../settings.env';
-if (file_exists($settingsFile)) {
-    $dotenv->overload($settingsFile);
+if (!is_file(dirname(__DIR__).'/vendor/autoload_runtime.php')) {
+    throw new LogicException('Symfony Runtime is missing. Try running "composer require symfony/runtime".');
 }
 
-$containerBuilder = new ContainerBuilder();
-$loader = new YamlFileLoader($containerBuilder, new FileLocator([
-        realpath(__DIR__ . '/../config'),
-        realpath(__DIR__ . '/..'),
-    ]
-));
-$loader->load('services.yaml');
-$containerBuilder->compile(true);
+require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
 
-$input = new ArgvInput();
+return function (array $context) {
+    $kernel = new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
 
-
-$application = new Application($containerBuilder);
-$application->run($input);
+    return new Application($kernel);
+};
