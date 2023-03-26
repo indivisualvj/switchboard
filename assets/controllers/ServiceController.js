@@ -1,7 +1,7 @@
-import { Controller } from '@hotwired/stimulus';
+import {Controller} from '@hotwired/stimulus';
 import axios from "axios";
-import { editor, Uri } from 'monaco-editor';
-import { setDiagnosticsOptions } from 'monaco-yaml';
+import {editor, Uri} from 'monaco-editor';
+import {setDiagnosticsOptions} from 'monaco-yaml';
 
 export default class ServiceController extends Controller {
 
@@ -32,10 +32,14 @@ export default class ServiceController extends Controller {
         let target = event.target;
         let file = target.getAttribute('data-file');
 
-        if (this.model && this.file === file) {
-            this.saveYaml(target);
+        if (this.model) {
+            if (this.file === file) {
+                this.saveYaml(target);
+                this.enableButtons(true);
+            }
 
         } else {
+            this.enableButtons(false, target);
             this.editYaml(target);
         }
     }
@@ -101,6 +105,7 @@ export default class ServiceController extends Controller {
         this.model = null;
         this.file = null;
         this.editorTarget.style.display = 'none';
+        this.enableButtons(true, null);
     }
 
     reaction(response) {
@@ -115,5 +120,19 @@ export default class ServiceController extends Controller {
         }
 
         alert(message);
+    }
+
+    enableButtons(enable, not) {
+        this.buttonTargets.forEach((b) => {
+            let logic = enable;
+            if (b === not) {
+                logic = !enable;
+            }
+            if (logic) {
+                b.removeAttribute('disabled');
+            } else {
+                b.setAttribute('disabled', 'disabled')
+            }
+        });
     }
 }
