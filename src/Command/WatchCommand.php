@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Manager\RuleManager;
 use App\SubRoutine\RunSubRoutine;
 use App\SubRoutine\TerminateSubRoutine;
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -43,7 +44,11 @@ class WatchCommand extends Command implements SignalableCommandInterface
         while (!$this->terminated && !$this->checkTerminated()) {
             // add logging
             $output->clear();
-            $this->runSubRoutine->execute($input, $output);
+            try {
+                $this->runSubRoutine->execute($input, $output);
+            } catch (Exception $err) {
+                $output->write($err);
+            }
             sleep($input->getArgument('interval'));
         }
 
@@ -51,6 +56,11 @@ class WatchCommand extends Command implements SignalableCommandInterface
         $this->terminateSubRoutine->execute($input, $output);
 
         return 0;
+    }
+
+    private function setStatus() {
+        $filename = $this->kernelProjectDir . '/running';
+        file_put_contents($filename, '1');
     }
 
     private function checkTerminated(): bool {
