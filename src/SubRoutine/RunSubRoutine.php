@@ -23,18 +23,29 @@ class RunSubRoutine implements SubRoutineInterface
 
     const LINE_LENGTH = 50;
 
+    private function lineFill($text, $filler): string
+    {
+        $length = (self::LINE_LENGTH - strlen($text) - 2) / 2;
+        return sprintf('%s %s %s',
+            str_repeat($filler, round($length, 0, PHP_ROUND_HALF_DOWN)),
+            $text,
+            str_repeat($filler, round($length))
+        );
+    }
+
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln(str_repeat('@', self::LINE_LENGTH));
-        $output->writeln(sprintf('@@@@@ %s @@@@@', (new \DateTime())->format('Y-m-d H:i:s')));
+        $output->writeln(str_repeat('µ', self::LINE_LENGTH));
+        $output->writeln($this->lineFill((new \DateTime())->format('Y-m-d H:i:s'), '@'));
         $output->writeln(str_repeat('_', self::LINE_LENGTH));
 
         $values = $this->readAll($output);
         $rules = $this->ruleFactory->createAll($this->rules);
 
+        $output->writeln($this->lineFill('rules', '|'));
         /** @var RuleInterface $rule */
         foreach ($rules as $key => $rule) {
-            $output->writeln(sprintf('##### %s #####', $key));
+            $output->writeln($this->lineFill('rule: ' .$key, ' '));
             $value = $rule->getInputKey() ? $values[$rule->getInputKey()] : $values;
             $outputKeys = $rule->execute($value, $output);
 
@@ -55,13 +66,15 @@ class RunSubRoutine implements SubRoutineInterface
         $values = [];
         $inputs = $this->inputManager->getInputs();
 
+        $output->writeln($this->lineFill('inputs', '|'));
+
         /** @var  $input \App\Input\InputInterface */
         foreach ($inputs as $key => $input) {
             $config = $input->getConfig();
             $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $input->read($output), $values);
-            $output->writeln(sprintf('reading from %s is: %s', $key, $values[$key]));
+            $output->writeln(sprintf('input "%s" is: %s', $key, $values[$key]));
         }
-        $output->writeln(str_repeat('#', self::LINE_LENGTH));
+        $output->writeln(str_repeat('_', self::LINE_LENGTH));
 
         return $values;
     }

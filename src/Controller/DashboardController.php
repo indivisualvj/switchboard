@@ -28,7 +28,7 @@ class DashboardController extends AbstractController
     public function pvLog(): JsonResponse
     {
         $log = file_get_contents($this->kernelProjectDir . '/var/log/pv.log');
-        $log = explode(str_repeat('@', RunSubRoutine::LINE_LENGTH), $log);
+        $log = explode(str_repeat('µ', RunSubRoutine::LINE_LENGTH), $log);
         $log = array_pop($log);
 
         return new JsonResponse([
