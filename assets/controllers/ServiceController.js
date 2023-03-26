@@ -21,9 +21,12 @@ export default class ServiceController extends Controller {
     execute(event) {
         let target = event.target;
         let url = target.getAttribute('data-url');
-        target.setAttribute('loading', 'loading');
+        this.setLoading(target, true);
+        this.enableButtons(false, target);
+
         axios.get(url).then((response) => {
-            target.removeAttribute('loading');
+            this.setLoading(target, false);
+            this.enableButtons(true);
             this.reaction(response);
         }).catch(console.error);
     }
@@ -47,17 +50,17 @@ export default class ServiceController extends Controller {
     editYaml(target) {
         let url = target.getAttribute('data-load-url');
         let file = target.getAttribute('data-file');
-        target.setAttribute('loading', 'loading');
+        this.setLoading(target, true);
 
         axios.get(url).then((response) => {
-            target.removeAttribute('loading');
+            this.setLoading(target, false);
             target.textContent = file + ' (Save)';
             this.openEditor(file, response.data.yaml);
 
         }).catch((err) => {
             console.error(err);
             this.closeEditor();
-            target.removeAttribute('loading');
+            this.setLoading(target, false);
             alert('error!');
         });
     }
@@ -66,20 +69,21 @@ export default class ServiceController extends Controller {
         let file = target.getAttribute('data-file');
 
         if (confirm('Save to ' + file + '?')) {
-            target.setAttribute('loading', 'loading');
+            this.setLoading(target, true);
+
             let url = target.getAttribute('data-save-url');
             let data = new FormData();
             data.set('contents', this.model.getValue());
 
             axios.post(url, data, {headers: {'Content-Type': 'multipart/form-data'}}).then((response) => {
-                target.removeAttribute('loading');
+                this.setLoading(target, false);
                 target.textContent = file + ' (Edit)';
                 this.closeEditor();
                 this.reaction(response);
 
             }).catch((err) => {
                 console.error(err);
-                target.removeAttribute('loading');
+                this.setLoading(target, false);
                 alert('error!');
             });
         }
@@ -111,7 +115,7 @@ export default class ServiceController extends Controller {
     reaction(response) {
         let message;
         if (response.data.success) {
-            message = 'done!';
+            return;
         } else {
             message = 'error!';
         }
@@ -128,11 +132,23 @@ export default class ServiceController extends Controller {
             if (b === not) {
                 logic = !enable;
             }
-            if (logic) {
-                b.removeAttribute('disabled');
-            } else {
-                b.setAttribute('disabled', 'disabled')
-            }
+            this.setEnabled(b, logic);
         });
+    }
+
+    setEnabled(target, enable) {
+        if (enable) {
+            target.removeAttribute('disabled');
+        } else {
+            target.setAttribute('disabled', 'disabled')
+        }
+    }
+
+    setLoading(target, enable) {
+        if (enable) {
+            target.setAttribute('loading', 'loading')
+        } else {
+            target.removeAttribute('loading');
+        }
     }
 }
