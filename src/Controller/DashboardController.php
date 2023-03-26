@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\SubRoutine\RunSubRoutine;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,5 +48,99 @@ class DashboardController extends AbstractController
         return new JsonResponse([
             'log' => $process->getOutput(),
         ]);
+    }
+
+    #[Route(path: '/dashboard/start-service')]
+    public function startService(): JsonResponse
+    {
+        $process = Process::fromShellCommandline(sprintf('cd %s; bin/console watch 30 > var/log/pv.log', $this->kernelProjectDir));
+        $process->start();
+
+        return new JsonResponse([
+            'success' => true,
+            'message' => $process->getErrorOutput(),
+        ]);
+    }
+
+    #[Route(path: '/dashboard/stop-service')]
+    public function stopService(): JsonResponse
+    {
+        $filename = $this->kernelProjectDir . '/terminate';
+        file_put_contents($filename, '1');
+
+        while ($terminate = file_get_contents($filename)) {
+            sleep(2);
+        }
+
+        return new JsonResponse([
+            'success' => !$terminate,
+        ]);
+    }
+
+    #[Route(path: '/dashboard/load-inputs')]
+    public function loadInputs(): JsonResponse
+    {
+        return new JsonResponse([
+            'yaml' => $this->load('inputs.yaml'),
+        ]);
+    }
+
+    #[Route(path: '/dashboard/load-rules')]
+    public function loadRules(): JsonResponse
+    {
+        return new JsonResponse([
+            'yaml' => $this->load('rules.yaml'),
+        ]);
+    }
+
+    #[Route(path: '/dashboard/load-outputs')]
+    public function loadOutputs(): JsonResponse
+    {
+        return new JsonResponse([
+            'yaml' => $this->load('outputs.yaml'),
+        ]);
+    }
+
+    #[Route(path: '/dashboard/save-inputs')]
+    public function saveInputs(Request $request): JsonResponse
+    {
+        $contents = $request->get('contents');
+        $this->save('inputs.yaml', $contents);
+
+        return new JsonResponse([
+            'success' => true,
+        ]);
+    }
+
+    #[Route(path: '/dashboard/save-outputs')]
+    public function saveOutputs(Request $request): JsonResponse
+    {
+        $contents = $request->get('contents');
+        $this->save('outputs.yaml', $contents);
+
+        return new JsonResponse([
+            'success' => true,
+        ]);
+    }
+
+    #[Route(path: '/dashboard/save-rules')]
+    public function saveRules(Request $request): JsonResponse
+    {
+        $contents = $request->get('contents');
+        $this->save('rules.yaml', $contents);
+
+        return new JsonResponse([
+            'success' => true,
+        ]);
+    }
+
+    private function save($file, $contents): void
+    {
+        file_put_contents($this->kernelProjectDir . '/' . $file, $contents);
+    }
+
+    private function load($file): string
+    {
+        return file_get_contents($this->kernelProjectDir . '/' . $file);
     }
 }

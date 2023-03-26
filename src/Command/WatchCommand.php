@@ -19,6 +19,7 @@ class WatchCommand extends Command implements SignalableCommandInterface
     public function __construct(
         private readonly RunSubRoutine $runSubRoutine,
         private readonly TerminateSubRoutine $terminateSubRoutine,
+        private readonly string $kernelProjectDir,
     )
     {
         parent::__construct();
@@ -39,7 +40,7 @@ class WatchCommand extends Command implements SignalableCommandInterface
             $output = $output->section();
         }
 
-        while (!$this->terminated) {
+        while (!$this->terminated && !$this->checkTerminated()) {
             // add logging
             $output->clear();
             $this->runSubRoutine->execute($input, $output);
@@ -50,6 +51,18 @@ class WatchCommand extends Command implements SignalableCommandInterface
         $this->terminateSubRoutine->execute($input, $output);
 
         return 0;
+    }
+
+    private function checkTerminated(): bool {
+        $filename = $this->kernelProjectDir . '/terminate';
+        if (file_exists($filename)) {
+            $term = file_get_contents($filename);
+            if ($term) {
+                file_put_contents($filename, '0');
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getSubscribedSignals(): array
