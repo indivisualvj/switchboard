@@ -21,10 +21,14 @@ class RunSubRoutine implements SubRoutineInterface
     ) {
     }
 
-    const LINE_LENGTH = 80;
+    const LINE_LENGTH = 50;
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $output->writeln(str_repeat('@', self::LINE_LENGTH));
+        $output->writeln(sprintf('@@@@@ %s @@@@@', (new \DateTime())->format('Y-m-d H:i:s')));
+        $output->writeln(str_repeat('_', self::LINE_LENGTH));
+
         $values = $this->readAll($output);
         $rules = $this->ruleFactory->createAll($this->rules);
 

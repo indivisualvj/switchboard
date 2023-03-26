@@ -5,8 +5,12 @@ export default class LogController extends Controller {
     static targets = [
         'console',
     ]
+    static values = {
+        url: String,
+    }
 
     connect() {
+        console.log(this.urlValue);
         this.initLogging();
     }
 
@@ -20,11 +24,12 @@ export default class LogController extends Controller {
         }, 15000);
     }
     _fetch(success) {
-        axios.get('/dashboard/pv-log').then((response) => {
-            this.consoleTarget.innerText = response.data.log;
-            this.consoleTarget.scroll(0, this.consoleTarget.scrollHeight);
-            success();
-        });
-
+        try {
+            axios.get(this.urlValue).then((response) => {
+                this.consoleTarget.innerText = response.data.log;
+                this.consoleTarget.scroll(0, this.consoleTarget.scrollHeight);
+                success();
+            }).catch(console.error);
+        } catch (e) {console.error(e);}
     }
 }

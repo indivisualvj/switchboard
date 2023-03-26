@@ -1,31 +1,43 @@
 @import "hack-font/build/web/hack.css";
 
 body {
-    background-color: lightgray;
+    background-color: black;
+    color: white;
     font-family: sans-serif;
     margin: 1%;
+    font-size: 1em;
+}
+
+h1, h2, h3, h4, h5, h5 {
+    font-size: 2em;
 }
 
 main {
-    display: flex;
+    /*display: flex;*/
 }
 .panel {
-    width: 50%;
-    height: 25vw;
-}
-
-.full {
-    width: 98%;
-    height: 80vh;
-}
-
-.log output {
     display: block;
-    padding: 10px;
-    width: 100%;
-    height: 100%;
-    overflow-y: scroll;
+    padding: .5%;
+    border-top: 1px solid yellow;
+}
+
+pre.log {
+    display: block;
+    padding: 0;
+    margin: 0;
     font-family: Hack, Ubuntu, sans-serif;
     color: green;
     background-color: black;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+@media screen and (max-width: 999px) {
+    body {
+        font-size: 1vw;
+    }
+
+    h1, h2, h3, h4, h5, h5 {
+        font-size: 6vw;
+    }
 }
