@@ -10,7 +10,6 @@ export default class LogController extends Controller {
     }
 
     connect() {
-        console.log(this.urlValue);
         this.initLogging();
     }
 
@@ -21,7 +20,7 @@ export default class LogController extends Controller {
     _run() {
         setTimeout(()=>{
             this._fetch(() => this._run());
-        }, 15000);
+        }, 5000);
     }
     _fetch(success) {
         try {

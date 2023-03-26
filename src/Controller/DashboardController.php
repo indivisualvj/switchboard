@@ -55,6 +55,7 @@ class DashboardController extends AbstractController
     {
         $process = Process::fromShellCommandline(sprintf('cd %s; bin/console watch 30 > var/log/pv.log', $this->kernelProjectDir));
         $process->start();
+        sleep(5);
 
         return new JsonResponse([
             'success' => true,
@@ -131,6 +132,26 @@ class DashboardController extends AbstractController
 
         return new JsonResponse([
             'success' => true,
+        ]);
+    }
+
+    #[Route(path: '/dashboard/check-service')]
+    public function checkService(): JsonResponse
+    {
+        $filename = $this->kernelProjectDir . '/running';
+        file_put_contents($filename, '0');
+
+        $timeout = 20;
+        $running = 0;
+
+        while ($timeout > 0 && !($running = file_get_contents($filename))) {
+            sleep(2);
+            $timeout -= 2;
+        }
+
+        return new JsonResponse([
+            'success' => (bool)$running,
+            'message' => $running ? 'Running' : 'Offline',
         ]);
     }
 

@@ -1,13 +1,13 @@
 import {Controller} from '@hotwired/stimulus';
 import axios from "axios";
-import {editor, Uri} from 'monaco-editor';
-import {setDiagnosticsOptions} from 'monaco-yaml';
+import {editor} from 'monaco-editor';
 
 export default class ServiceController extends Controller {
 
     static targets = [
         'editor',
         'button',
+        'status',
     ];
 
     editor;
@@ -15,7 +15,7 @@ export default class ServiceController extends Controller {
     file;
 
     connect() {
-
+        this.initStatus();
     }
 
     execute(event) {
@@ -150,5 +150,38 @@ export default class ServiceController extends Controller {
         } else {
             target.removeAttribute('loading');
         }
+    }
+
+    setActive(target, enable) {
+        if (enable) {
+            target.setAttribute('active', 'active');
+        } else {
+            target.removeAttribute('active');
+        }
+    }
+
+    initStatus() {
+        this.statusTargets.forEach((s) => {
+            let _call = (target) => {
+                this.setActive(target, false);
+                this.setLoading(target, true);
+
+                axios.get(target.getAttribute('data-check-url')).then((response) => {
+                    this.setLoading(target, false);
+                    this.setActive(target, response.data.success);
+                    target.innerText = response.data.message;
+
+                    setTimeout(() => {
+                        _call(target);
+                    }, 15000);
+
+                }).catch((err) => {
+                    debugger
+                    console.error(err);
+                    setTimeout(() => _call(target), 15000);
+                });
+            };
+            _call(s);
+        });
     }
 }

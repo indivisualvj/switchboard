@@ -45,7 +45,7 @@ class RunSubRoutine implements SubRoutineInterface
         $output->writeln($this->lineFill('rules', '|'));
         /** @var RuleInterface $rule */
         foreach ($rules as $key => $rule) {
-            $output->writeln($this->lineFill($key, ' '));
+            $output->writeln(sprintf('rule %s', $key));
             $value = $rule->getInputKey() ? $values[$rule->getInputKey()] : $values;
             $outputKeys = $rule->execute($value, $output);
 

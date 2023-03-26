@@ -18,6 +18,7 @@
             <header>
                 {% block header %}
                     <div class="controls" data-controller="service">
+                        <button class="status" data-service-target="status" data-check-url="{{ path('app_dashboard_checkservice') }}" loading>Offline</button>
                         <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_dashboard_stopservice') }}">Stop Service</button>
                         <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_dashboard_startservice') }}">Start Service</button>
                         <button data-action="click->service#edit:prevent"

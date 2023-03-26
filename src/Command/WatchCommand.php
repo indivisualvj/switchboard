@@ -41,7 +41,10 @@ class WatchCommand extends Command implements SignalableCommandInterface
             $output = $output->section();
         }
 
-        while (!$this->terminated && !$this->checkTerminated()) {
+        $sleepTimout = $input->getArgument('interval') / 5;
+
+        while (!$this->terminated) {
+            $this->setStatus(1);
             // add logging
             $output->clear();
             try {
@@ -49,8 +52,22 @@ class WatchCommand extends Command implements SignalableCommandInterface
             } catch (Exception $err) {
                 $output->write($err);
             }
-            sleep($input->getArgument('interval'));
+
+            for ($i = 0; $i < 5; $i++) {
+                $this->setStatus(1);
+                $output->writeln(sprintf('sleeping in stages (%d)', $sleepTimout));
+                sleep($sleepTimout);
+
+                $this->checkTerminated();
+                if ($this->terminated) {
+                    $output->writeln('oops. got to go.');
+                    $this->handleSignal(SIGTERM);
+                    break;
+                }
+            }
         }
+
+        $this->setStatus(0);
 
         $output->writeln(sprintf('received signal to terminate (%d)', $this->terminated));
         $this->terminateSubRoutine->execute($input, $output);
@@ -58,21 +75,20 @@ class WatchCommand extends Command implements SignalableCommandInterface
         return 0;
     }
 
-    private function setStatus() {
+    private function setStatus(int $value) {
         $filename = $this->kernelProjectDir . '/running';
-        file_put_contents($filename, '1');
+        file_put_contents($filename, $value);
     }
 
-    private function checkTerminated(): bool {
+    private function checkTerminated(): void {
         $filename = $this->kernelProjectDir . '/terminate';
         if (file_exists($filename)) {
             $term = file_get_contents($filename);
             if ($term) {
                 file_put_contents($filename, '0');
-                return true;
+                $this->handleSignal(SIGTERM);
             }
         }
-        return false;
     }
 
     public function getSubscribedSignals(): array
