@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,8 +27,14 @@ class LoginController extends AbstractController
     }
 
     #[Route(path: '/login/check')]
-    public function check(AuthenticationUtils $authenticationUtils): Response
+    public function check(): Response
     {
-        throw $this->createAccessDeniedException();
+        throw new Exception('Error in security config');
+    }
+
+    #[Route(path: '/logout')]
+    public function logout(): Response
+    {
+        throw new Exception('Error in security config');
     }
 }

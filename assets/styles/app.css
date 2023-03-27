@@ -4,12 +4,8 @@ body {
     background-color: black;
     color: white;
     font-family: sans-serif;
-    margin: 1%;
-    font-size: 1em;
-}
-
-h1, h2, h3, h4, h5, h5 {
-    font-size: 2em;
+    margin: 1vw;
+    padding-top: 20px;
 }
 
 main {
@@ -17,7 +13,7 @@ main {
 }
 .panel {
     display: block;
-    padding: .5%;
+    padding: 1vw;
     border-top: 1px solid yellow;
 }
 
@@ -32,23 +28,13 @@ pre.log {
     white-space: pre-wrap;
 }
 
-@media screen and (max-width: 999px) {
-    body {
-        font-size: 1vw;
-    }
-
-    h1, h2, h3, h4, h5, h5 {
-        font-size: 6vw;
-    }
-}
-
 .controls {
     position: fixed;
     z-index: 9999;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 5px 1%;
+    padding: 5px 1vw;
     box-sizing: border-box;
     background-color: white;
     border-bottom: 1px solid darkgray;
@@ -57,8 +43,12 @@ pre.log {
     transition-delay: 0ms;
 }
 
+.controls .nomobile {
+    display: inline-block;
+}
+
 button {
-    padding: 5px 15px;
+    padding: 5px 10px;
     border: 1px solid #484848;
     outline: none;
     border-radius: 2px;
@@ -99,10 +89,10 @@ button[loading]:hover {
 
 #editor {
     position: fixed;
-    top: 4%;
-    left: 2%;
-    width: 96%;
-    height: 94%;
+    top: 6vh;
+    left: 2vw;
+    width: 96vw;
+    height: 90vh;
     z-index: 999;
 }
 
@@ -119,4 +109,47 @@ button.status:hover {
 button[active].status {
     background-color: #23a523;
     color: white;
+}
+
+.login {
+    width: 40vw;
+    margin: 20vh auto;
+}
+
+.login input {
+    font-size: 1.5em;
+    display: block;
+    margin: 2vw auto;
+    width: 100%;
+}
+
+.login button {
+    font-size: 1.5em;
+    display: block;
+    margin: 5vw auto;
+}
+
+form.logout {
+    float: right;
+}
+
+@media screen and (max-width: 1000px) {
+    .login {
+        width: 60vw;
+        margin: 20vh auto;
+    }
+    .controls .nomobile {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 497px) {
+    .login {
+        width: 80vw;
+        margin: 20vh auto;
+    }
+
+    pre {
+        font-size: 2.8vw;
+    }
 }
