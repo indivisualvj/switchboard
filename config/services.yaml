@@ -8,6 +8,7 @@ services:
         autowire: true
         autoconfigure: true
         bind:
+            $pvStartCommand: '%env(PV_START_COMMAND)%'
             $kernelProjectDir: '%kernel.project_dir%'
             $inputs: '%inputs%'
             $outputs: '%outputs%'

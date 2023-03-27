@@ -160,16 +160,26 @@ export default class ServiceController extends Controller {
         }
     }
 
+    setInactive(target, enable) {
+        if (enable) {
+            target.setAttribute('inactive', 'inactive');
+        } else {
+            target.removeAttribute('inactive');
+        }
+    }
+
     initStatus() {
         this.statusTargets.forEach((s) => {
             let _call = (target) => {
                 this.setActive(target, false);
+                this.setInactive(target, false);
                 this.setLoading(target, true);
 
                 axios.get(target.getAttribute('data-check-url')).then((response) => {
                     this.setLoading(target, false);
                     this.setActive(target, response.data.success);
-                    target.innerText = response.data.message;
+                    this.setInactive(target, !response.data.success);
+                    target.innerHTML = response.data.message;
 
                     setTimeout(() => {
                         _call(target);

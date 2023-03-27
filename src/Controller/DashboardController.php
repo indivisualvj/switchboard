@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\SubRoutine\RunSubRoutine;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +16,7 @@ class DashboardController extends AbstractController
 {
     public function __construct(
         private readonly string $kernelProjectDir,
+        private readonly string $pvStartCommand,
     )
     {
     }
@@ -28,9 +30,13 @@ class DashboardController extends AbstractController
     #[Route(path: '/dashboard/pv-log')]
     public function pvLog(): JsonResponse
     {
-        $log = file_get_contents($this->kernelProjectDir . '/var/log/pv.log');
-        $log = explode(str_repeat('µ', RunSubRoutine::LINE_LENGTH), $log);
-        $log = array_pop($log);
+        try {
+            $log = file_get_contents($this->kernelProjectDir . '/var/log/pv.log');
+            $log = explode(str_repeat('µ', RunSubRoutine::LINE_LENGTH), $log);
+            $log = array_pop($log);
+        } catch (Exception $e) {
+            $log = $e->getMessage();
+        }
 
         return new JsonResponse([
             'log' => $log,
@@ -52,13 +58,17 @@ class DashboardController extends AbstractController
     #[Route(path: '/dashboard/start-service')]
     public function startService(): JsonResponse
     {
-        $process = Process::fromShellCommandline(sprintf('cd %s; bin/console watch 30 > var/log/pv.log', $this->kernelProjectDir));
-        $process->start();
-        sleep(2);
+        $process = Process::fromShellCommandline($this->pvStartCommand);
+        try {
+            $process->start();
+            $message = $process->getOutput() . ' ' . $process->getErrorOutput();
+        } catch (Exception $exception) {
+            $message = $exception->getMessage();
+        }
 
         return new JsonResponse([
-            'success' => true,
-            'message' => $process->getErrorOutput(),
+            'success' => !$process->getErrorOutput() && !$process->getOutput(),
+            'message' => $message,
         ]);
     }
 
@@ -154,8 +164,16 @@ class DashboardController extends AbstractController
 
         return new JsonResponse([
             'success' => (bool)$running,
-            'message' => $running ? 'Running' : 'Offline',
+            'message' => $running ? '&#129321;' : '&#128565;',
+//            'message' => $running ? '&#9728;' : '&#9928;',
         ]);
+    }
+
+    #[Route(path: '/dashboard/reboot')]
+    public function reboot(): void
+    {
+        $process = Process::fromShellCommandline('sudo reboot');
+        $process->start();
     }
 
     private function save($file, $contents): void

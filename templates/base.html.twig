@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
-        <title>{% block title %}Grumpy PV Enterprises{% endblock %}</title>
+        <title>{% block title %}GrumpyB Enterprises{% endblock %}</title>
         <link rel="icon" type="" href="{{ asset('grumpy-lunte.png') }}">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
@@ -19,7 +19,7 @@
             <header>
                 {% block header %}
                     <div class="controls" data-controller="service">
-                        <button class="status" data-service-target="status" data-check-url="{{ path('app_dashboard_checkservice') }}" loading>Offline</button>
+                        <button class="status" data-service-target="status" data-check-url="{{ path('app_dashboard_checkservice') }}" loading>&#128565;</button>
                         <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_dashboard_stopservice') }}">Stop Service</button>
                         <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_dashboard_startservice') }}">Start Service</button>
                         <div class="nomobile">

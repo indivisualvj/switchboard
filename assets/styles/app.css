@@ -3,7 +3,7 @@
 body {
     background-color: black;
     color: white;
-    font-family: sans-serif;
+    font-family: Hack, Ubuntu, sans-serif;
     margin: 1vw;
     padding-top: 20px;
 }
@@ -54,6 +54,8 @@ button {
     border-radius: 2px;
     text-align: center;
     font-weight: bold;
+    font-size: 1em;
+    line-height: 1em;
     display: inline-block;
     color: #484848;
     text-decoration: none;
@@ -108,6 +110,11 @@ button.status:hover {
 
 button[active].status {
     background-color: #23a523;
+    color: white;
+}
+
+button[inactive].status {
+    background-color: #a52323;
     color: white;
 }
 
