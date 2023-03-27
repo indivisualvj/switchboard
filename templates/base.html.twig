@@ -20,26 +20,26 @@
                 {% block header %}
                     <div class="controls" data-controller="service">
                         <button class="status" data-service-target="status" data-check-url="{{ path('app_dashboard_checkservice') }}" loading>&#128565;</button>
-                        <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_dashboard_stopservice') }}">Stop Service</button>
-                        <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_dashboard_startservice') }}">Start Service</button>
+{#                        <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_system_idle') }}">Idle</button>#}
+                        <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_system_restart') }}">Restart</button>
                         <div class="nomobile">
                             <button data-action="click->service#edit:prevent"
                                     data-service-target="button"
                                     data-file="inputs.yaml"
-                                    data-load-url="{{ path('app_dashboard_loadinputs') }}"
-                                    data-save-url="{{ path('app_dashboard_saveinputs') }}"
+                                    data-load-url="{{ path('app_option_loadinputs') }}"
+                                    data-save-url="{{ path('app_option_saveinputs') }}"
                             >inputs.yaml (Edit)</button>
                             <button data-action="click->service#edit:prevent"
                                     data-service-target="button"
                                     data-file="rules.yaml"
-                                    data-load-url="{{ path('app_dashboard_loadrules') }}"
-                                    data-save-url="{{ path('app_dashboard_saverules') }}"
+                                    data-load-url="{{ path('app_option_loadrules') }}"
+                                    data-save-url="{{ path('app_option_saverules') }}"
                             >rules.yaml (Edit)</button>
                             <button data-action="click->service#edit:prevent"
                                     data-service-target="button"
                                     data-file="outputs.yaml"
-                                    data-load-url="{{ path('app_dashboard_loadoutputs') }}"
-                                    data-save-url="{{ path('app_dashboard_saveoutputs') }}"
+                                    data-load-url="{{ path('app_option_loadoutputs') }}"
+                                    data-save-url="{{ path('app_option_saveoutputs') }}"
                             >outputs.yaml (Edit)</button>
                             <button data-action="click->service#closeEditor:prevent">Cancel</button>
                             <div id="editor" style="display: none" data-service-target="editor"></div>

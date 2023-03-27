@@ -24,5 +24,7 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
-/terminate
 /running
+/idle
+/restart
+/stop

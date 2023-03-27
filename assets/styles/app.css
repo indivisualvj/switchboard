@@ -140,7 +140,7 @@ form.logout {
     float: right;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 859px) {
     .login {
         width: 60vw;
         margin: 20vh auto;
@@ -150,7 +150,7 @@ form.logout {
     }
 }
 
-@media screen and (max-width: 497px) {
+@media screen and (max-width: 505px) {
     .login {
         width: 80vw;
         margin: 20vh auto;

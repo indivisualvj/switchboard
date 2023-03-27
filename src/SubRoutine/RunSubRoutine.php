@@ -7,6 +7,7 @@ use App\Manager\InputManager;
 use App\Manager\NormalizerManager;
 use App\Manager\OutputManager;
 use App\Rule\RuleInterface;
+use App\Util\StringUtil;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,28 +22,16 @@ class RunSubRoutine implements SubRoutineInterface
     ) {
     }
 
-    const LINE_LENGTH = 50;
-
-    private function lineFill($text, $filler): string
-    {
-        $length = (self::LINE_LENGTH - strlen($text) - 2) / 2;
-        return sprintf('%s %s %s',
-            str_repeat($filler, round($length, 0, PHP_ROUND_HALF_DOWN)),
-            $text,
-            str_repeat($filler, round($length))
-        );
-    }
-
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln(str_repeat('µ', self::LINE_LENGTH));
-        $output->writeln($this->lineFill((new \DateTime())->format('Y-m-d H:i:s'), '@'));
-        $output->writeln(str_repeat('_', self::LINE_LENGTH));
+        $output->writeln(str_repeat('µ', StringUtil::LINE_LENGTH));
+        $output->writeln(StringUtil::lineFill((new \DateTime())->format('Y-m-d H:i:s'), '@'));
+        $output->writeln(str_repeat('_', StringUtil::LINE_LENGTH));
 
         $values = $this->readAll($output);
         $rules = $this->ruleFactory->createAll($this->rules);
 
-        $output->writeln($this->lineFill('rules', '|'));
+        $output->writeln(StringUtil::lineFill('rules', '|'));
         /** @var RuleInterface $rule */
         foreach ($rules as $key => $rule) {
             $output->writeln(sprintf('rule %s', $key));
@@ -55,7 +44,7 @@ class RunSubRoutine implements SubRoutineInterface
                 $output->writeln('feedback:');
                 $this->outputManager->getOutput($outputKey)->write($output);
             }
-            $output->writeln(str_repeat('_', self::LINE_LENGTH));
+            $output->writeln(str_repeat('_', StringUtil::LINE_LENGTH));
         }
 
         return 0;
@@ -66,7 +55,7 @@ class RunSubRoutine implements SubRoutineInterface
         $values = [];
         $inputs = $this->inputManager->getInputs();
 
-        $output->writeln($this->lineFill('inputs', '|'));
+        $output->writeln(StringUtil::lineFill('inputs', '|'));
 
         /** @var  $input \App\Input\InputInterface */
         foreach ($inputs as $key => $input) {
@@ -74,7 +63,7 @@ class RunSubRoutine implements SubRoutineInterface
             $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $input->read($output), $values);
             $output->writeln(sprintf('input "%s" is: %s', $key, $values[$key]));
         }
-        $output->writeln(str_repeat('_', self::LINE_LENGTH));
+        $output->writeln(str_repeat('_', StringUtil::LINE_LENGTH));
 
         return $values;
     }

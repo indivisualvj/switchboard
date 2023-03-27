@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
-use App\SubRoutine\RunSubRoutine;
+use App\Util\StringUtil;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +15,6 @@ class DashboardController extends AbstractController
 {
     public function __construct(
         private readonly string $kernelProjectDir,
-        private readonly string $pvStartCommand,
     )
     {
     }
@@ -32,7 +30,7 @@ class DashboardController extends AbstractController
     {
         try {
             $log = file_get_contents($this->kernelProjectDir . '/var/log/pv.log');
-            $log = explode(str_repeat('µ', RunSubRoutine::LINE_LENGTH), $log);
+            $log = explode(str_repeat('µ', StringUtil::LINE_LENGTH), $log);
             $log = array_pop($log);
         } catch (Exception $e) {
             $log = $e->getMessage();
@@ -55,99 +53,6 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/dashboard/start-service')]
-    public function startService(): JsonResponse
-    {
-        $process = Process::fromShellCommandline($this->pvStartCommand);
-        try {
-            $process->start();
-            $message = $process->getOutput() . ' ' . $process->getErrorOutput();
-        } catch (Exception $exception) {
-            $message = $exception->getMessage();
-        }
-
-        return new JsonResponse([
-            'success' => !$process->getErrorOutput() && !$process->getOutput(),
-            'message' => $message,
-        ]);
-    }
-
-    #[Route(path: '/dashboard/stop-service')]
-    public function stopService(): JsonResponse
-    {
-        $filename = $this->kernelProjectDir . '/terminate';
-        file_put_contents($filename, '1');
-
-        $timeout = 20;
-        $terminate = 0;
-
-        while ($timeout > 0 && ($terminate = file_get_contents($filename))) {
-            sleep(2);
-            $timeout -= 2;
-        }
-
-        return new JsonResponse([
-            'success' => !$terminate,
-        ]);
-    }
-
-    #[Route(path: '/dashboard/load-inputs')]
-    public function loadInputs(): JsonResponse
-    {
-        return new JsonResponse([
-            'yaml' => $this->load('inputs.yaml'),
-        ]);
-    }
-
-    #[Route(path: '/dashboard/load-rules')]
-    public function loadRules(): JsonResponse
-    {
-        return new JsonResponse([
-            'yaml' => $this->load('rules.yaml'),
-        ]);
-    }
-
-    #[Route(path: '/dashboard/load-outputs')]
-    public function loadOutputs(): JsonResponse
-    {
-        return new JsonResponse([
-            'yaml' => $this->load('outputs.yaml'),
-        ]);
-    }
-
-    #[Route(path: '/dashboard/save-inputs')]
-    public function saveInputs(Request $request): JsonResponse
-    {
-        $contents = $request->get('contents');
-        $this->save('inputs.yaml', $contents);
-
-        return new JsonResponse([
-            'success' => true,
-        ]);
-    }
-
-    #[Route(path: '/dashboard/save-outputs')]
-    public function saveOutputs(Request $request): JsonResponse
-    {
-        $contents = $request->get('contents');
-        $this->save('outputs.yaml', $contents);
-
-        return new JsonResponse([
-            'success' => true,
-        ]);
-    }
-
-    #[Route(path: '/dashboard/save-rules')]
-    public function saveRules(Request $request): JsonResponse
-    {
-        $contents = $request->get('contents');
-        $this->save('rules.yaml', $contents);
-
-        return new JsonResponse([
-            'success' => true,
-        ]);
-    }
-
     #[Route(path: '/dashboard/check-service')]
     public function checkService(): JsonResponse
     {
@@ -165,24 +70,6 @@ class DashboardController extends AbstractController
         return new JsonResponse([
             'success' => (bool)$running,
             'message' => $running ? '&#129321;' : '&#128565;',
-//            'message' => $running ? '&#9728;' : '&#9928;',
         ]);
-    }
-
-    #[Route(path: '/dashboard/reboot')]
-    public function reboot(): void
-    {
-        $process = Process::fromShellCommandline('sudo reboot');
-        $process->start();
-    }
-
-    private function save($file, $contents): void
-    {
-        file_put_contents($this->kernelProjectDir . '/' . $file, $contents);
-    }
-
-    private function load($file): string
-    {
-        return file_get_contents($this->kernelProjectDir . '/' . $file);
     }
 }

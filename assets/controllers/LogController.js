@@ -28,7 +28,10 @@ export default class LogController extends Controller {
                 this.consoleTarget.innerText = response.data.log;
                 this.consoleTarget.scroll(0, this.consoleTarget.scrollHeight);
                 success();
-            }).catch(console.error);
+            }).catch((err) => {
+                console.error(err);
+                success();
+            });
         } catch (e) {console.error(e);}
     }
 }

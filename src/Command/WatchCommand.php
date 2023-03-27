@@ -2,9 +2,9 @@
 
 namespace App\Command;
 
-use App\Manager\RuleManager;
 use App\SubRoutine\RunSubRoutine;
 use App\SubRoutine\TerminateSubRoutine;
+use App\Util\StringUtil;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
@@ -12,10 +12,13 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
 class WatchCommand extends Command implements SignalableCommandInterface
 {
     private $terminated = false;
+    private $idle = false;
+    private $restart = false;
 
     public function __construct(
         private readonly RunSubRoutine $runSubRoutine,
@@ -44,49 +47,94 @@ class WatchCommand extends Command implements SignalableCommandInterface
         $sleepTimout = $input->getArgument('interval') / 5;
 
         while (!$this->terminated) {
-            $this->setStatus(1);
-            // add logging
+            $this->setRunning(1);
             $output->clear();
-            try {
-                $this->runSubRoutine->execute($input, $output);
-            } catch (Exception $err) {
-                $output->write($err);
+
+            if (!$this->idle) {
+                try {
+                    $this->runSubRoutine->execute($input, $output);
+
+                } catch (Exception $err) {
+                    $output->write($err);
+                }
+            } else {
+                $output->writeln(StringUtil::lineFill('idle', '+'));
             }
 
             for ($i = 0; $i < 5; $i++) {
-                $this->setStatus(1);
-                $output->writeln(sprintf('sleeping in stages (%d)', $sleepTimout));
+                $this->setRunning(1);
                 sleep($sleepTimout);
 
-                $this->checkTerminated();
-                if ($this->terminated) {
-                    $output->writeln('oops. got to go.');
-                    $this->handleSignal(SIGTERM);
+                $this->checkStop();
+                $this->checkRestart();
+                $this->checkIdle();
+
+                if ($this->terminated || $this->restart) {
                     break;
                 }
             }
         }
 
-        $this->setStatus(0);
+        $this->resetStatus();
 
-        $output->writeln(sprintf('received signal to terminate (%d)', $this->terminated));
-        $this->terminateSubRoutine->execute($input, $output);
+        if ($this->restart) {
+            $output->writeln(sprintf('received signal to restart. i\'ll be back.'));
+            $process = Process::fromShellCommandline(sprintf('echo "" > var/log/pv.log; bin/console watch %s > var/log/pv.log', $input->getArgument('interval')));
+            $process->start();
+
+        } else {
+            $output->writeln(sprintf('received signal to terminate. good bye.'));
+            $this->terminateSubRoutine->execute($input, $output);
+        }
 
         return 0;
     }
 
-    private function setStatus(int $value) {
+    private function resetStatus() {
+        $value = 0;
+        $this->setRunning($value);
+        $filename = $this->kernelProjectDir . '/idle';
+        file_put_contents($filename, $value);
+        $filename = $this->kernelProjectDir . '/stop';
+        file_put_contents($filename, $value);
+        $filename = $this->kernelProjectDir . '/restart';
+        file_put_contents($filename, $value);
+    }
+
+    private function setRunning(int $value) {
         $filename = $this->kernelProjectDir . '/running';
         file_put_contents($filename, $value);
     }
 
-    private function checkTerminated(): void {
-        $filename = $this->kernelProjectDir . '/terminate';
+    private function checkStop(): void {
+        $filename = $this->kernelProjectDir . '/stop';
         if (file_exists($filename)) {
-            $term = file_get_contents($filename);
-            if ($term) {
-                file_put_contents($filename, '0');
+            $contents = (int) file_get_contents($filename);
+            if ($contents) {
                 $this->handleSignal(SIGTERM);
+            }
+        }
+    }
+
+    private function checkRestart(): void {
+        $this->restart = false;
+        $filename = $this->kernelProjectDir . '/restart';
+        if (file_exists($filename)) {
+            $contents = (int) file_get_contents($filename);
+            if ($contents) {
+                $this->restart = true;
+                $this->handleSignal(SIGTERM);
+            }
+        }
+    }
+
+    private function checkIdle(): void {
+        $this->idle = false;
+        $filename = $this->kernelProjectDir . '/idle';
+        if (file_exists($filename)) {
+            $contents = (int)file_get_contents($filename);
+            if ($contents) {
+                $this->idle = true;
             }
         }
     }
