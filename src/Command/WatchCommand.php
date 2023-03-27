@@ -79,7 +79,10 @@ class WatchCommand extends Command implements SignalableCommandInterface
 
         if ($this->restart) {
             $output->writeln(sprintf('received signal to restart. i\'ll be back.'));
-            $process = Process::fromShellCommandline(sprintf('echo "" > var/log/pv.log; bin/console watch %s > var/log/pv.log', $input->getArgument('interval')));
+            $process = Process::fromShellCommandline(sprintf(
+                'cd %s; echo "" > var/log/pv.log; bin/console watch %s > var/log/pv.log',
+                $this->kernelProjectDir,
+                $input->getArgument('interval')));
             $process->start();
 
         } else {
