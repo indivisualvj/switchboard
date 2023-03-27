@@ -37,7 +37,6 @@ class DashboardController extends AbstractController
         ]);
     }
 
-
     #[Route(path: '/dashboard/sys-log')]
     public function sysLog(): JsonResponse
     {
@@ -55,7 +54,7 @@ class DashboardController extends AbstractController
     {
         $process = Process::fromShellCommandline(sprintf('cd %s; bin/console watch 30 > var/log/pv.log', $this->kernelProjectDir));
         $process->start();
-        sleep(5);
+        sleep(2);
 
         return new JsonResponse([
             'success' => true,
@@ -69,8 +68,12 @@ class DashboardController extends AbstractController
         $filename = $this->kernelProjectDir . '/terminate';
         file_put_contents($filename, '1');
 
-        while ($terminate = file_get_contents($filename)) {
+        $timeout = 20;
+        $terminate = 0;
+
+        while ($timeout > 0 && ($terminate = file_get_contents($filename))) {
             sleep(2);
+            $timeout -= 2;
         }
 
         return new JsonResponse([

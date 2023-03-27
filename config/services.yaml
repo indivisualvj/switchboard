@@ -12,10 +12,6 @@ services:
             $inputs: '%inputs%'
             $outputs: '%outputs%'
             $rules: '%rules%'
-#
-#    App\Application:
-#        autowire: true
-#        autoconfigure: true
 
     App\Controller\:
         resource: '../src/Controller'

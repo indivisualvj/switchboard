@@ -173,11 +173,11 @@ export default class ServiceController extends Controller {
 
                     setTimeout(() => {
                         _call(target);
-                    }, 15000);
+                    }, 30000);
 
                 }).catch((err) => {
                     console.error(err);
-                    setTimeout(() => _call(target), 15000);
+                    setTimeout(() => _call(target), 30000);
                 });
             };
             _call(s);
