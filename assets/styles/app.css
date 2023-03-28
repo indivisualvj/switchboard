@@ -13,7 +13,7 @@ main {
 .panel {
     display: block;
     padding: 1vw;
-    border-top: 1px solid yellow;
+    border-top: 1px solid #484848;
 }
 
 pre.log {
