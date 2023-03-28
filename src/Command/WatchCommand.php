@@ -79,7 +79,7 @@ class WatchCommand extends Command implements SignalableCommandInterface
 
         if ($this->restart) {
             $command = sprintf(
-                'cd %s; bin/console cache:clear; echo "" > var/log/pv.log; bin/console watch %s > var/log/pv.log',
+                'cd %s; bin/console cache:clear; echo "" > var/log/pv.log; bin/console watch %s > var/log/pv.log &',
                 $this->kernelProjectDir,
                 $input->getArgument('interval')
             );
@@ -89,9 +89,12 @@ class WatchCommand extends Command implements SignalableCommandInterface
             $process->setTty(false);
             $process->setTimeout(360);
             $process->start();
-            $process->wait(function ($type, $buffer) use ($output) {
+            $process->waitUntil(function ($type, $buffer) use ($output) {
                 $output->writeln($buffer);
+                return str_contains($buffer, '[OK] Cache');
             });
+
+            sleep(2);
 
         } else {
             $output->writeln(sprintf('received signal to terminate. good bye.'));
