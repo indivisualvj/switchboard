@@ -1,11 +1,10 @@
 @import "hack-font/build/web/hack.css";
 
 body {
-    background-color: black;
-    color: white;
     font-family: Hack, Ubuntu, sans-serif;
     margin: 1vw;
     padding-top: 20px;
+    background-color: #efefef;
 }
 
 main {
@@ -22,8 +21,7 @@ pre.log {
     padding: 0;
     margin: 0;
     font-family: Hack, Ubuntu, sans-serif;
-    color: green;
-    background-color: black;
+
     word-wrap: break-word;
     white-space: pre-wrap;
 }
