@@ -78,12 +78,20 @@ class WatchCommand extends Command implements SignalableCommandInterface
         $this->resetStatus();
 
         if ($this->restart) {
-            $output->writeln(sprintf('received signal to restart. i\'ll be back.'));
-            $process = Process::fromShellCommandline(sprintf(
-                'cd %s; echo "" > var/log/pv.log; bin/console watch %s > var/log/pv.log',
+            $command = sprintf(
+                'cd %s; bin/console cache:clear; echo "" > var/log/pv.log; bin/console watch %s > var/log/pv.log',
                 $this->kernelProjectDir,
-                $input->getArgument('interval')));
+                $input->getArgument('interval')
+            );
+            $output->writeln(sprintf('received signal to restart. i\'ll be back.'));
+            $output->writeln($command);
+            $process = Process::fromShellCommandline($command);
+            $process->setTty(false);
+            $process->setTimeout(360);
             $process->start();
+            $process->wait(function ($type, $buffer) use ($output) {
+                $output->writeln($buffer);
+            });
 
         } else {
             $output->writeln(sprintf('received signal to terminate. good bye.'));
