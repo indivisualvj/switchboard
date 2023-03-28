@@ -28,3 +28,4 @@ yarn-error.log
 /idle
 /restart
 /stop
+/deploy.sh
