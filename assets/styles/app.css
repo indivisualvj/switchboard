@@ -1,9 +1,10 @@
 @import "hack-font/build/web/hack.css";
+@import "@fontsource/roboto";
 
 body {
     background-color: black;
     color: white;
-    font-family: Hack, Ubuntu, sans-serif;
+    font-family: Hack, monospace, sans-serif;
     margin: 1vw;
     padding-top: 20px;
 }
@@ -21,7 +22,7 @@ pre.log {
     display: block;
     padding: 0;
     margin: 0;
-    font-family: Hack, Ubuntu, sans-serif;
+    font-family: Hack, monospace, sans-serif;
     color: green;
     background-color: black;
     word-wrap: break-word;
@@ -52,6 +53,7 @@ button {
     border: 1px solid #484848;
     outline: none;
     border-radius: 2px;
+    font-family: Arial, sans-serif;
     text-align: center;
     font-weight: bold;
     font-size: 1em;
