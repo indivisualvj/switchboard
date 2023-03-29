@@ -22,4 +22,9 @@ class AbstractInput implements InputInterface
     {
         return $this->config;
     }
+
+    public function getDefault()
+    {
+        return $this->config['default'] ?? 'n/a';
+    }
 }

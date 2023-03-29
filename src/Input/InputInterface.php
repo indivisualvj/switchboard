@@ -9,4 +9,6 @@ interface InputInterface
     public function read(?OutputInterface $output);
 
     public function getConfig(): array;
+
+    public function getDefault();
 }
