@@ -1,12 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block main %}
-    <div class="panel" data-controller="log" data-log-url-value="{{ path('app_dashboard_sysinfo') }}">
+    <div class="panel" data-controller="log" data-log-interval-value="10" data-log-url-value="{{ path('app_dashboard_sysinfo') }}">
         <h3>System</h3>
-        <div class="log" data-log-target="console">... fetching</div>
+        <div class="log" data-log-target="console"></div>
     </div>
-    <div class="panel" data-controller="log" data-log-url-value="{{ path('app_dashboard_watchlog') }}">
+    <div class="panel" data-controller="log" data-log-interval-value="15" data-log-url-value="{{ path('app_dashboard_watchlog') }}">
         <h3>PV</h3>
-        <div class="log hardwrap" data-log-target="console">... fetching</div>
+        <div class="log" data-log-target="console"></div>
+    </div>
+    <div class="panel" data-controller="log" data-log-interval-value="60" data-log-url-value="{{ path('app_statistics_table') }}">
+        <h3>Statistics</h3>
+        <div class="log" data-log-target="console"></div>
     </div>
 {% endblock %}

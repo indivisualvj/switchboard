@@ -7,6 +7,7 @@ export default class LogController extends Controller {
     ]
     static values = {
         url: String,
+        interval: Number
     }
 
     connect() {
@@ -20,7 +21,7 @@ export default class LogController extends Controller {
     _run() {
         setTimeout(()=>{
             this._fetch(() => this._run());
-        }, 5000);
+        }, this.intervalValue * 1000);
     }
     _fetch(success) {
         try {
