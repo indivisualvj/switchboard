@@ -1,0 +1,23 @@
+{% if table.title is defined %}<h4>{{ table.title }}</h4>{% endif %}
+<table>
+    {% if table.head is defined %}
+        <tr>
+            {% for col in table.head %}
+                <th>{{ col }}</th>
+            {% endfor %}
+        </tr>
+    {% endif %}
+    {% for row in table.body %}
+        <tr>
+            {% for cell in row %}
+                <td>
+                    {% if cell is iterable %}
+                        {% include 'controller/dashboard/component/table.html.twig' with {'table': cell} %}
+                    {% else %}
+                        {{ cell }}
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>

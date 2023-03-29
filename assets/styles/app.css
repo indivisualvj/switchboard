@@ -20,17 +20,32 @@ main {
     border-top: none;
 }
 
-pre.log {
+.log {
     display: block;
     padding: 0;
-    margin: 0;
+    margin: 0 auto;
+    width: 48vw;
     font-family: Hack, monospace, sans-serif;
-    overflow: hidden;
 }
 
-pre.hardwrap {
-    word-wrap: break-word;
-    white-space: pre-wrap;
+table {
+    border-top: 1px solid #484848;
+    width: 100%;
+}
+
+table:first-child {
+    border-top: none;
+}
+
+th, td {
+    min-height: 10px;
+    text-align: right;
+    vertical-align: top;
+}
+
+th:first-child, td:first-child {
+    text-align: left;
+    /*font-weight: bold;*/
 }
 
 .controls {
@@ -145,7 +160,11 @@ button[inactive].status {
 form.logout {
     float: right;
 }
-
+@media screen and (max-width: 1005px) {
+    .log {
+        width: 100%;
+    }
+}
 @media screen and (max-width: 859px) {
     .login {
         width: 60vw;
@@ -162,7 +181,7 @@ form.logout {
         margin: 20vh auto;
     }
 
-    pre {
-        font-size: 2.9vw;
+    .log {
+        font-size: 3vw;
     }
 }

@@ -25,7 +25,7 @@ export default class LogController extends Controller {
     _fetch(success) {
         try {
             axios.get(this.urlValue).then((response) => {
-                this.consoleTarget.innerText = response.data.log;
+                this.consoleTarget.innerHTML = response.data.log;
                 this.consoleTarget.scroll(0, this.consoleTarget.scrollHeight);
                 success();
             }).catch((err) => {

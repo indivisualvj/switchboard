@@ -13,7 +13,7 @@ class ComparisonRule extends AbstractRule
     public function result($value): string
     {
         $result = $this->evaluate($value);
-        return sprintf('%s (%s %s %s -> %s)', $this->getInputKey(), $value, $this->getOperator(), $this->getValue(), $result?'true':'false');
+        return sprintf('%s (%s %s %s [%s])', $this->getInputKey(), $value, $this->getOperator(), $this->getValue(), $result?'true':'false');
     }
 
     private function getOperator(): string

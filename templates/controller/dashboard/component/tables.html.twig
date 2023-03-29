@@ -1,0 +1,4 @@
+{% if title is defined %}<h3>{{ title }}</h3>{% endif %}
+{% for table in tables %}
+    {% include 'controller/dashboard/component/table.html.twig' %}
+{% endfor %}

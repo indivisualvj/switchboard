@@ -29,7 +29,7 @@ class CommandOutput implements OutputInterface
     private function execute(?\Symfony\Component\Console\Output\OutputInterface $output): int
     {
         $command = implode(' ', $this->getCommand());
-        $process = Process::fromShellCommandline(implode(' ', $this->getCommand()));
+        $process = Process::fromShellCommandline($command);
         $process->setTimeout(30);
         $process->setTty(false);
         $process->start();
@@ -37,9 +37,9 @@ class CommandOutput implements OutputInterface
         $errorOutput = $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output;
         foreach ($process as $type => $data) {
             if ($process::OUT === $type) {
-                $output->writeln($data);
+                $output->writeln(trim($data));
             } else {
-                $errorOutput->writeln($data);
+                $errorOutput->writeln(trim($data));
             }
         }
 

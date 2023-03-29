@@ -29,7 +29,7 @@ class StageRule extends AbstractRule
     public function result($value): string
     {
         $stageValue = $this->getStageValue();
-        return sprintf('%s (%d - %d = %d) => stage %d', $this->getInputKey(), $value, $stageValue, $value-$stageValue, self::$currentStage);
+        return sprintf('%s (%d - %d = %d) stage %d', $this->getInputKey(), $value, $stageValue, $value-$stageValue, self::$currentStage);
     }
 
     private function getStages(): int

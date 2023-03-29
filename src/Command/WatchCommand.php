@@ -79,7 +79,7 @@ class WatchCommand extends Command implements SignalableCommandInterface
 
         if ($this->restart) {
             $command = sprintf(
-                'cd %s; bin/console cache:clear; echo "" > var/log/pv.log; bin/console watch %s > var/log/pv.log &',
+                'cd %s; bin/console cache:clear; echo "" > var/log/watch.log; bin/console watch %s > var/log/watch.log &',
                 $this->kernelProjectDir,
                 $input->getArgument('interval')
             );

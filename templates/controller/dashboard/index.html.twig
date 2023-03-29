@@ -3,10 +3,10 @@
 {% block main %}
     <div class="panel" data-controller="log" data-log-url-value="{{ path('app_dashboard_sysinfo') }}">
         <h3>System</h3>
-        <pre class="log" data-log-target="console">... fetching</pre>
+        <div class="log" data-log-target="console">... fetching</div>
     </div>
-    <div class="panel" data-controller="log" data-log-url-value="{{ path('app_dashboard_pvlog') }}">
+    <div class="panel" data-controller="log" data-log-url-value="{{ path('app_dashboard_watchlog') }}">
         <h3>PV</h3>
-        <pre class="log hardwrap" data-log-target="console">... fetching</pre>
+        <div class="log hardwrap" data-log-target="console">... fetching</div>
     </div>
 {% endblock %}

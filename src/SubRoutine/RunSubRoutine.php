@@ -34,17 +34,16 @@ class RunSubRoutine implements SubRoutineInterface
         $output->writeln(StringUtil::lineFill('rules', '|'));
         /** @var RuleInterface $rule */
         foreach ($rules as $key => $rule) {
-            $output->writeln(sprintf('rule %s', $key));
             $value = $rule->getInputKey() ? $values[$rule->getInputKey()] : $values;
             $outputKeys = $rule->execute($value, $output);
 
-            $output->writeln(sprintf('result: %s', $rule->result($value)));
+            $output->writeln(sprintf('%s: %s', $key, $rule->result($value)));
             foreach ($outputKeys as $outputKey) {
-                $output->writeln(sprintf('therefore executing [%s] ...', $outputKey));
-                $output->writeln('feedback:');
+                $output->writeln(sprintf('executing: "%s"', $outputKey));
+                $output->write('feedback: ');
                 $this->outputManager->getOutput($outputKey)->write($output);
             }
-            $output->writeln(str_repeat('_', StringUtil::LINE_LENGTH));
+            $output->writeln(str_repeat('-', StringUtil::LINE_LENGTH));
         }
 
         return 0;
