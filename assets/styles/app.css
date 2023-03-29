@@ -1,8 +1,7 @@
 @import "hack-font/build/web/hack.css";
 
 body {
-    background-color: black;
-    color: white;
+    background-color: #efefef;
     font-family: Arial, sans-serif;
     margin: 1vw;
     padding-top: 20px;
@@ -14,7 +13,7 @@ main {
 .panel {
     display: block;
     padding: 1vw;
-    border-top: 1px solid yellow;
+    border-top: 1px solid #484848;
 }
 
 pre.log {
@@ -22,8 +21,10 @@ pre.log {
     padding: 0;
     margin: 0;
     font-family: Hack, monospace, sans-serif;
-    color: green;
-    background-color: black;
+    overflow: hidden;
+}
+
+pre.hardwrap {
     word-wrap: break-word;
     white-space: pre-wrap;
 }

@@ -41,10 +41,10 @@ class DashboardController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/dashboard/sys-log')]
-    public function sysLog(): JsonResponse
+    #[Route(path: '/dashboard/sys-info')]
+    public function sysInfo(): JsonResponse
     {
-        $process = Process::fromShellCommandline(sprintf('tail -n 25 %s/var/log/dev.log', $this->kernelProjectDir));
+        $process = Process::fromShellCommandline('free -m');
         $process->run();
         $process->wait();
 
