@@ -27,16 +27,18 @@ class StatisticsManager
         $loggingTime = $this->isLoggingTime(new DateTime());
 
         foreach ($inputs as $key => $value) {
-            $entry = new Input();
-            $entry->setName($key);
-            $entry->setValue($value);
+            if (is_numeric($value) || is_bool($value)) {
+                $entry = new Input();
+                $entry->setName($key);
+                $entry->setValue($value);
 
-            if ($loggingTime) {
-                $history = $this->getInputRepository()->findLastMinutes($key, 5);
-                $this->updateAverage($entry, $history);
+                if ($loggingTime) {
+                    $history = $this->getInputRepository()->findLastMinutes($key, 5);
+                    $this->updateAverage($entry, $history);
+                }
+
+                $this->entityManager->persist($entry);
             }
-
-            $this->entityManager->persist($entry);
         }
     }
 
