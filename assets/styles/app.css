@@ -26,11 +26,13 @@ main {
     margin: 0 auto;
     width: 48vw;
     font-family: Hack, monospace, sans-serif;
+    overflow-wrap: anywhere;
 }
 
 table {
     border-top: 1px solid #484848;
     width: 100%;
+    overflow-wrap: break-word;
 }
 
 table:first-child {
