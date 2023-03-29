@@ -28,13 +28,14 @@ class RunSubRoutine implements SubRoutineInterface
         $output->writeln(StringUtil::lineFill((new \DateTime())->format('Y-m-d H:i:s'), '@'));
         $output->writeln(str_repeat('_', StringUtil::LINE_LENGTH));
 
-        $values = $this->readAll($output);
+        $inputs = $this->readAll($output);
+
         $rules = $this->ruleFactory->createAll($this->rules);
 
         $output->writeln(StringUtil::lineFill('rules', '|'));
         /** @var RuleInterface $rule */
         foreach ($rules as $key => $rule) {
-            $value = $rule->getInputKey() ? $values[$rule->getInputKey()] : $values;
+            $value = $rule->getInputKey() ? $inputs[$rule->getInputKey()] : $inputs;
             $outputKeys = $rule->execute($value, $output);
 
             $output->writeln(sprintf('%s: %s', $key, $rule->result($value)));
@@ -59,7 +60,13 @@ class RunSubRoutine implements SubRoutineInterface
         /** @var  $input \App\Input\InputInterface */
         foreach ($inputs as $key => $input) {
             $config = $input->getConfig();
-            $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $input->read($output), $values);
+            $value = $input->getDefault();
+            try {
+                $value = trim($input->read($output));
+            } catch (\Exception $exception) {
+                $output->writeln($exception->getMessage());
+            }
+            $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $value, $values);
             $output->writeln(sprintf('input "%s" is: %s', $key, $values[$key]));
         }
         $output->writeln(str_repeat('_', StringUtil::LINE_LENGTH));
