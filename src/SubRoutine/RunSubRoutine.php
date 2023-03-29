@@ -6,6 +6,7 @@ use App\Factory\RuleFactory;
 use App\Manager\InputManager;
 use App\Manager\NormalizerManager;
 use App\Manager\OutputManager;
+use App\Manager\StatisticsManager;
 use App\Rule\RuleInterface;
 use App\Util\StringUtil;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,6 +19,7 @@ class RunSubRoutine implements SubRoutineInterface
         private readonly InputManager      $inputManager,
         private readonly OutputManager     $outputManager,
         private readonly NormalizerManager $normalizerManager,
+        private readonly StatisticsManager $statisticsManager,
         private readonly array             $rules,
     ) {
     }
@@ -29,23 +31,33 @@ class RunSubRoutine implements SubRoutineInterface
         $output->writeln(str_repeat('_', StringUtil::LINE_LENGTH));
 
         $inputs = $this->readAll($output);
-
         $rules = $this->ruleFactory->createAll($this->rules);
+        $ruleResults = [];
+        $outputsSwitched = [];
 
         $output->writeln(StringUtil::lineFill('rules', '|'));
         /** @var RuleInterface $rule */
         foreach ($rules as $key => $rule) {
             $value = $rule->getInputKey() ? $inputs[$rule->getInputKey()] : $inputs;
-            $outputKeys = $rule->execute($value, $output);
 
+            $ruleResults[$key] = $rule->evaluate($value);
+
+            $outputKeys = $rule->execute($value, $output);
             $output->writeln(sprintf('%s: %s', $key, $rule->result($value)));
+
             foreach ($outputKeys as $outputKey) {
+                $outputsSwitched[$outputKey] = true;
                 $output->writeln(sprintf('executing: "%s"', $outputKey));
                 $output->write('feedback: ');
                 $this->outputManager->getOutput($outputKey)->write($output);
             }
             $output->writeln(str_repeat('-', StringUtil::LINE_LENGTH));
         }
+
+        $this->statisticsManager->logInputs($inputs);
+        $this->statisticsManager->logRules($ruleResults);
+        $this->statisticsManager->logOutputs($outputsSwitched);
+        $this->statisticsManager->flush();
 
         return 0;
     }

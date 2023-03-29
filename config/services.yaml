@@ -18,14 +18,14 @@ services:
         tags: ['controller.service_arguments']
 
     App\Command\:
-        resource: '../src/Command/*'
+        resource: '../src/Command'
         public: true
 
     App\Manager\:
-        resource: '../src/Manager/*'
+        resource: '../src/Manager'
 
     App\Factory\:
-        resource: '../src/Factory/*'
+        resource: '../src/Factory'
 
     App\SubRoutine\:
-        resource: '../src/SubRoutine/*'
+        resource: '../src/SubRoutine'
