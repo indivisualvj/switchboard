@@ -36,12 +36,13 @@ class StatisticsController extends AbstractController
 
     private function createTable(string $title, array $stats): array
     {
-        $head = array_keys($stats);
-        $body = [array_values($stats)];
+        $body = [];
+        foreach ($stats as $key => $value) {
+            $body[] = [$key, $value];
+        }
 
         return [
             'title' => $title,
-            'head' => $head,
             'body' => $body,
         ];
     }
