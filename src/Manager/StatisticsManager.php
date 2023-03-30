@@ -67,7 +67,7 @@ class StatisticsManager
         foreach ($this->outputManager->getOutputs() as $key => $value) {
             $entry = new Output();
             $entry->setName($key);
-            $entry->setValue(isset($outputs[$key]) ? 100 : 1);
+            $entry->setValue(isset($outputs[$key]) ? 100 : 0);
 
             if ($loggingTime) {
                 $this->updateAverage($entry, $this->getOutputRepository());
