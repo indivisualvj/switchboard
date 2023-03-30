@@ -12,5 +12,6 @@ interface RuleInterface
     public function getInputKey(): ?string;
     public function getTrueOutputs(): array;
     public function getFalseOutputs(): array;
+    public function getLastStatus(): bool;
 
 }

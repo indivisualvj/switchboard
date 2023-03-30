@@ -46,25 +46,25 @@ class RuleSetRule extends AbstractRuleSet
             switch ($operator) {
                 case self::AND:
                     if (!$result) {
-                        return false;
+                        return $this->lastStatus = false;
                     }
                     $conclusion = true;
                     break;
                 case self::OR:
                     if ($result) {
-                        return true;
+                        return $this->lastStatus = true;
                     }
                     break;
                 case self::XOR:
                     if ($result && $conclusion) {
-                        return false;
+                        return $this->lastStatus = false;
                     }
                     $conclusion = $result;
                     break;
             }
         }
 
-        return $conclusion;
+        return $this->lastStatus = $conclusion;
     }
 
     private function getOperator(): string

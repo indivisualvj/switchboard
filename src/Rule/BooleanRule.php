@@ -19,6 +19,6 @@ class BooleanRule extends AbstractRule
 
     public function evaluate($value, ?OutputInterface $output = null): bool
     {
-        return $value == $this->getValue();
+        return $this->lastStatus = $value == $this->getValue();
     }
 }

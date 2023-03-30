@@ -41,7 +41,7 @@ class RunSubRoutine implements SubRoutineInterface
         foreach ($rules as $key => $rule) {
             $value = $rule->getInputKey() ? $inputs[$rule->getInputKey()] : $inputs;
 
-            $ruleResults[$key] = $rule->evaluate($value);
+            $ruleResults[$key] = $rule->getLastStatus();
 
             $outputKeys = $rule->execute($value, $output);
             $output->writeln(sprintf('%s: %s', $key, $rule->result($value)));
