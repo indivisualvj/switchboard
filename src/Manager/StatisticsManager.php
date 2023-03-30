@@ -151,7 +151,7 @@ class StatisticsManager
         }
 
         $avg = $sum / count($history);
-        if ($avg > -1 && $avg < 1) {
+        if (abs($avg) <= 1) {
             $avg *= 100;
         }
 
