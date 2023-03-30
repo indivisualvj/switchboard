@@ -20,6 +20,6 @@ class NormalizerManager
             $value = $normalizer->normalize($value, $values);
         }
 
-        return $value;
+        return trim($value);
     }
 }

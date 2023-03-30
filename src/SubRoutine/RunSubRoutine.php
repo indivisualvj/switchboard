@@ -74,7 +74,7 @@ class RunSubRoutine implements SubRoutineInterface
             $config = $input->getConfig();
             $value = $input->getDefault();
             try {
-                $value = trim($input->read($output));
+                $value = $input->read($output);
             } catch (\Exception $exception) {
                 $output->writeln($exception->getMessage());
             }

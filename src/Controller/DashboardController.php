@@ -111,54 +111,75 @@ class DashboardController extends AbstractController
 
     private function createInputsTable(string $row): array
     {
-        $inputs = preg_split('/\n/', preg_replace('/\|+ ([^\|]+) \|+/', '$1', $row));
-        $body = [];
-        for ($i = 2; $i < count($inputs); $i++) {
-            $body[] = array_slice(preg_split('/(input "|" is: )/', $inputs[$i]), 1, 2);
-        }
+        try {
+            $inputs = preg_split('/\n/', preg_replace('/\|+ ([^\|]+) \|+/', '$1', $row));
+            $body = [];
+            for ($i = 2; $i < count($inputs); $i++) {
+                $body[] = array_slice(preg_split('/(input "|" is: )/', $inputs[$i]), 1, 2);
+            }
 
-        return [
-            'title' => $inputs[1],
-            'body' => $body,
-        ];
+            return [
+                'title' => $inputs[1],
+                'body' => $body,
+            ];
+        } catch (Exception $ex) {
+            return [
+                'title' => $ex->getMessage(),
+                'body' => [[$row]],
+            ];
+        }
     }
 
     private function createRuleTable(string $rule): array
     {
-        $rule = preg_split('/\n/', $rule);
-        $header = explode(': ', $rule[0]);
-        for ($ri = 1; $ri < count($rule); $ri++) {
-            $row = $rule[$ri];
-            if ('' === $row) {
-                $cells = [' ', ' '];
-            } else {
-                $cells = explode(': ', $row);
-                array_unshift($cells);
+        try {
+            $rule = preg_split('/\n/', $rule);
+            $header = explode(': ', $rule[0]);
+            for ($ri = 1; $ri < count($rule); $ri++) {
+                $row = $rule[$ri];
+                if ('' === $row) {
+                    $cells = [' ', ' '];
+                } else {
+                    $cells = explode(': ', $row);
+                    array_unshift($cells);
+                }
+                $body[] = $cells;
             }
-            $body[] = $cells;
-        }
 
-        return [
-            'head' => $header,
-            'body' => $body,
-        ];
+            return [
+                'head' => $header,
+                'body' => $body,
+            ];
+        } catch (Exception $ex) {
+            return [
+                'title' => $ex->getMessage(),
+                'body' => [[$rule]],
+            ];
+        }
     }
 
     private function createRulesTable(string $rules): array
     {
-        $caption =  preg_replace('/\n\|+ (.+) \|+.*/s', '$1', $rules);
-        $table = [
-            'title' => $caption,
-            'body' => [],
-        ];
+        try {
+            $caption =  preg_replace('/\n\|+ (.+) \|+.*/s', '$1', $rules);
+            $table = [
+                'title' => $caption,
+                'body' => [],
+            ];
 
-        $rules = preg_replace('/[^\n]+\n(.+)/s', '$1', $rules);
-        $rules = explode(str_repeat('-', StringUtil::LINE_LENGTH), $rules);
-        for ($i = 0; $i < count($rules); $i++) {
-            $rule = trim($rules[$i]);
-            if ('' !== $rule) {
-                $table['body'][] = [$this->createRuleTable($rule)];
+            $rules = preg_replace('/[^\n]+\n(.+)/s', '$1', $rules);
+            $rules = explode(str_repeat('-', StringUtil::LINE_LENGTH), $rules);
+            for ($i = 0; $i < count($rules); $i++) {
+                $rule = trim($rules[$i]);
+                if ('' !== $rule) {
+                    $table['body'][] = [$this->createRuleTable($rule)];
+                }
             }
+        } catch (Exception $ex) {
+            $table = [
+                'title' => $ex->getMessage(),
+                'body' => [[$rules]],
+            ];
         }
 
         return $table;

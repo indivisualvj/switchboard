@@ -23,7 +23,7 @@ class StageRule extends AbstractRule
             self::$currentStage = max(0, self::$currentStage);
         }
 
-        return true;
+        return (bool)self::$currentStage;
     }
 
     public function result($value): string
