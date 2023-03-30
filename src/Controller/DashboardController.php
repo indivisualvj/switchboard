@@ -88,10 +88,16 @@ class DashboardController extends AbstractController
                 $rows = explode(str_repeat('_', StringUtil::LINE_LENGTH), $log);
 
                 if (count($rows)) {
-                    $tables[] = $this->createInputsTable($rows[1]);
-                    $tables[] = $this->createRulesTable($rows[2]);
-
-                    $time = preg_replace('/\n@+ ([^@]+) @+\n/', '$1', $rows[0]);
+                    try {
+                        $time = preg_replace('/\n@+ ([^@]+) @+\n/', '$1', $rows[0]);
+                        $tables[] = $this->createInputsTable($rows[1]);
+                        $tables[] = $this->createRulesTable($rows[2]);
+                    } catch (Exception $exception) {
+                        $tables[] = [
+                            'title' => $exception,
+                            'body' => [[$log]],
+                        ];
+                    }
                 }
             }
 

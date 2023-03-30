@@ -9,6 +9,7 @@ use App\Manager\OutputManager;
 use App\Manager\StatisticsManager;
 use App\Rule\RuleInterface;
 use App\Util\StringUtil;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -75,11 +76,13 @@ class RunSubRoutine implements SubRoutineInterface
             $value = $input->getDefault();
             try {
                 $value = $input->read($output);
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $output->writeln($exception->getMessage());
             }
-            $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $value, $values);
+
+            $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $value, $values, $output);
             $output->writeln(sprintf('input "%s" is: %s', $key, $values[$key]));
+
         }
         $output->writeln(str_repeat('_', StringUtil::LINE_LENGTH));
 
