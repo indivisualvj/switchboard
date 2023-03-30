@@ -35,10 +35,7 @@ class StatisticsManager
                 $entry->setValue($value);
 
                 if ($loggingTime) {
-                    $history = $this->getInputRepository()->findLastMinutes($key, 5);
-                    if (count($history)) {
-                        $this->updateAverage($entry, $history);
-                    }
+                    $this->updateAverage($entry, $this->getInputRepository());
                 }
 
                 $this->entityManager->persist($entry);
@@ -56,10 +53,7 @@ class StatisticsManager
             $entry->setValue($value ? 100 : 0);
 
             if ($loggingTime) {
-                $history = $this->getRuleRepository()->findLastMinutes($key, 5);
-                if (count($history)) {
-                    $this->updateAverage($entry, $history);
-                }
+                $this->updateAverage($entry, $this->getRuleRepository());
             }
 
             $this->entityManager->persist($entry);
