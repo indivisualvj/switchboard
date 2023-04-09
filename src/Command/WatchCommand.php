@@ -44,6 +44,7 @@ class WatchCommand extends Command implements SignalableCommandInterface
             $output = $output->section();
         }
 
+        $this->resetStatus();
         $sleepTimout = $input->getArgument('interval') / 5;
 
         while (!$this->terminated) {
@@ -104,7 +105,8 @@ class WatchCommand extends Command implements SignalableCommandInterface
         return 0;
     }
 
-    private function resetStatus() {
+    private function resetStatus(): void
+    {
         $value = 0;
         $this->setRunning($value);
         $filename = $this->kernelProjectDir . '/idle';
@@ -115,12 +117,14 @@ class WatchCommand extends Command implements SignalableCommandInterface
         file_put_contents($filename, $value);
     }
 
-    private function setRunning(int $value) {
+    private function setRunning(int $value): void
+    {
         $filename = $this->kernelProjectDir . '/running';
         file_put_contents($filename, $value);
     }
 
-    private function checkStop(): void {
+    private function checkStop(): void
+    {
         $filename = $this->kernelProjectDir . '/stop';
         if (file_exists($filename)) {
             $contents = (int) file_get_contents($filename);
