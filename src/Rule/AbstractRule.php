@@ -6,6 +6,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AbstractRule implements RuleInterface
 {
+    protected bool $lastStatus = false;
+
     public function __construct(
         protected string $name,
         protected array $config,
@@ -55,5 +57,10 @@ class AbstractRule implements RuleInterface
     public function result($value): string
     {
         return 'n/a';
+    }
+
+    public function getLastStatus(): bool
+    {
+        return $this->lastStatus;
     }
 }

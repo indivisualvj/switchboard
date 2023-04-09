@@ -13,16 +13,16 @@ class ImplausibleValueNormalizer extends AbstractNormalizer
         $operand = $this->getOperand();
 
         if (self::GREATER === $this->getOperator()) {
-            return $value > $operand ? $this->getFallback() : $operand;
+            return $value > $operand ? $this->getFallback() : $value;
 
         } else if (self::SMALLER === $this->getOperator()) {
-            return $value < $operand ? $this->getFallback() : $operand;
+            return $value < $operand ? $this->getFallback() : $value;
 
         } else if (self::EQUAL === $this->getOperator()) {
-            return $value === $operand ? $this->getFallback() : $operand;
+            return $value === $operand ? $this->getFallback() : $value;
         }
 
-        return $operand;
+        return $value;
     }
 
     private function getOperand(): string

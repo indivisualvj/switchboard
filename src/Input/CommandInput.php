@@ -33,9 +33,9 @@ class CommandInput extends AbstractInput
         $errorOutput = $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output;
         foreach ($process as $type => $data) {
             if ($process::OUT === $type) {
-                $result = trim($data);
+                $result = $data;
             } else {
-                $errorOutput->writeln($data);
+                $errorOutput->writeln(trim($data));
             }
         }
 

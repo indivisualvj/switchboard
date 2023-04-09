@@ -32,11 +32,16 @@ class ComparisonRule extends AbstractRule
         $operand = $this->getValue();
         switch ($operator) {
             case self::SMALLER:
-                return $value < $operand;
+                $this->lastStatus = $value < $operand;
+                break;
             case self::GREATER:
-                return $value > $operand;
+                $this->lastStatus = $value > $operand;
+                break;
             case self::EQUAL:
-                return $value == $operand;
+                $this->lastStatus = $value == $operand;
+                break;
         }
+
+        return $this->lastStatus;
     }
 }

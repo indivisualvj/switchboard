@@ -7,10 +7,12 @@ use App\Entity\Input;
 use App\Entity\Output;
 use App\Entity\Rule;
 use App\Repository\InputRepository;
+use App\Repository\LogEntryRepository;
 use App\Repository\OutputRepository;
 use App\Repository\RuleRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 
 class StatisticsManager
 {
@@ -33,8 +35,7 @@ class StatisticsManager
                 $entry->setValue($value);
 
                 if ($loggingTime) {
-                    $history = $this->getInputRepository()->findLastMinutes($key, 5);
-                    $this->updateAverage($entry, $history);
+                    $this->updateAverage($entry, $this->getInputRepository());
                 }
 
                 $this->entityManager->persist($entry);
@@ -49,11 +50,10 @@ class StatisticsManager
         foreach ($rules as $key => $value) {
             $entry = new Rule();
             $entry->setName($key);
-            $entry->setValue($value);
+            $entry->setValue($value ? 100 : 0);
 
             if ($loggingTime) {
-                $history = $this->getRuleRepository()->findLastMinutes($key, 5);
-                $this->updateAverage($entry, $history);
+                $this->updateAverage($entry, $this->getRuleRepository());
             }
 
             $this->entityManager->persist($entry);
@@ -67,11 +67,10 @@ class StatisticsManager
         foreach ($this->outputManager->getOutputs() as $key => $value) {
             $entry = new Output();
             $entry->setName($key);
-            $entry->setValue(isset($outputs[$key]));
+            $entry->setValue(isset($outputs[$key]) ? 100 : 0);
 
             if ($loggingTime) {
-                $history = $this->getOutputRepository()->findLastMinutes($key, 10);
-                $this->updateAverage($entry, $history);
+                $this->updateAverage($entry, $this->getOutputRepository());
             }
 
             $this->entityManager->persist($entry);
@@ -86,7 +85,9 @@ class StatisticsManager
 
     public function flush(): void
     {
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->flush();
+        } catch (Exception $exception) {}
     }
 
     public function getInputStatistics($minutes): array
@@ -135,28 +136,32 @@ class StatisticsManager
         return $averages;
     }
 
-    private function updateAverage(AbstractLogEntry $entry, $history): void
+    private function updateAverage(AbstractLogEntry $entry, LogEntryRepository $repository): void
     {
-        $sum = 0;
-        /** @var AbstractLogEntry $item */
-        foreach ($history as $item) {
-            if ($item->isAveraged()) {
-                return;
+        try {
+            $history = $repository->findLastMinutes($entry->getName(), 10);
+            if (count($history)) {
+                $sum = 0;
+                /** @var AbstractLogEntry $item */
+                foreach ($history as $item) {
+                    if ($item->isAveraged()) {
+                        return;
+                    }
+                    $sum += (int)$item->getValue();
+                }
+                /** @var AbstractLogEntry $item */
+                foreach ($history as $item) {
+                    $this->entityManager->remove($item);
+                }
+
+                $avg = $sum / count($history);
+
+                $entry->setAveraged(true);
+                $entry->setValue((int)$avg);
             }
-            $sum += (int)$item->getValue();
-        }
-        /** @var AbstractLogEntry $item */
-        foreach ($history as $item) {
-            $this->entityManager->remove($item);
-        }
+        } catch (Exception $exception) {
 
-        $avg = $sum / count($history);
-        if ($avg > -1 && $avg < 1) {
-            $avg *= 100;
         }
-
-        $entry->setAveraged(true);
-        $entry->setValue((int)$avg);
     }
 
     private function getInputRepository(): InputRepository

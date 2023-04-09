@@ -9,6 +9,7 @@ use App\Manager\OutputManager;
 use App\Manager\StatisticsManager;
 use App\Rule\RuleInterface;
 use App\Util\StringUtil;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -40,7 +41,7 @@ class RunSubRoutine implements SubRoutineInterface
         foreach ($rules as $key => $rule) {
             $value = $rule->getInputKey() ? $inputs[$rule->getInputKey()] : $inputs;
 
-            $ruleResults[$key] = $rule->evaluate($value);
+            $ruleResults[$key] = $rule->getLastStatus();
 
             $outputKeys = $rule->execute($value, $output);
             $output->writeln(sprintf('%s: %s', $key, $rule->result($value)));
@@ -74,12 +75,14 @@ class RunSubRoutine implements SubRoutineInterface
             $config = $input->getConfig();
             $value = $input->getDefault();
             try {
-                $value = trim($input->read($output));
-            } catch (\Exception $exception) {
+                $value = $input->read($output);
+            } catch (Exception $exception) {
                 $output->writeln($exception->getMessage());
             }
-            $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $value, $values);
+
+            $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $value, $values, $output);
             $output->writeln(sprintf('input "%s" is: %s', $key, $values[$key]));
+
         }
         $output->writeln(str_repeat('_', StringUtil::LINE_LENGTH));
 
