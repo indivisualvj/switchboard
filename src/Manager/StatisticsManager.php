@@ -87,7 +87,9 @@ class StatisticsManager
     {
         try {
             $this->entityManager->flush();
-        } catch (Exception $exception) {}
+        } catch (Exception $exception) {
+
+        }
     }
 
     public function getInputStatistics($minutes): array

@@ -16,9 +16,9 @@ use Symfony\Component\Process\Process;
 
 class WatchCommand extends Command implements SignalableCommandInterface
 {
-    private $terminated = false;
-    private $idle = false;
-    private $restart = false;
+    private bool $terminated = false;
+    private bool $idle = false;
+    private bool $restart = false;
 
     public function __construct(
         private readonly RunSubRoutine $runSubRoutine,
@@ -29,7 +29,7 @@ class WatchCommand extends Command implements SignalableCommandInterface
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('watch')
