@@ -6,7 +6,7 @@ class FuzzyJsonNormalizer extends AbstractNormalizer
 {
     public function normalize($value, array $values)
     {
-        if ($value) {
+        if (is_string($value)) {
             $start = strpos($value, '{');
             $end = strrpos($value, '}');
             $end = $end-$start+1;
