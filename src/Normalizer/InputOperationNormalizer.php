@@ -11,14 +11,14 @@ class InputOperationNormalizer extends AbstractNormalizer
 
     public function normalize($value, array $values)
     {
-        try {
+        if (is_numeric($value) && isset($values[$this->getInput()]) && is_numeric($values[$this->getInput()])) {
             if (self::OPERATOR_ADD === $this->getOperator()) {
                 return $value + $values[$this->getInput()];
 
             } else if (self::OPERATOR_SUB === $this->getOperator()) {
                 return $value - $values[$this->getInput()];
             }
-        } catch (Exception $ex) {}
+        }
 
         return null;
     }
