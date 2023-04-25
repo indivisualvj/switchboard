@@ -2,6 +2,8 @@
 
 namespace App\Normalizer;
 
+use Exception;
+
 class InputOperationNormalizer extends AbstractNormalizer
 {
     const OPERATOR_ADD = '+';
@@ -9,12 +11,14 @@ class InputOperationNormalizer extends AbstractNormalizer
 
     public function normalize($value, array $values)
     {
-        if (self::OPERATOR_ADD === $this->getOperator()) {
-            return $value + $values[$this->getInput()];
+        try {
+            if (self::OPERATOR_ADD === $this->getOperator()) {
+                return $value + $values[$this->getInput()];
 
-        } else if (self::OPERATOR_SUB === $this->getOperator()) {
-            return $value - $values[$this->getInput()];
-        }
+            } else if (self::OPERATOR_SUB === $this->getOperator()) {
+                return $value - $values[$this->getInput()];
+            }
+        } catch (Exception $ex) {}
 
         return null;
     }
