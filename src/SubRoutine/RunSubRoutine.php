@@ -80,7 +80,8 @@ class RunSubRoutine implements SubRoutineInterface
                 $output->writeln($exception->getMessage());
             }
 
-            $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $value, $values, $output);
+            $values[$key] = $this->normalizerManager->normalize($config['normalizers'] ?? [], $value, $values, $output)
+                ?? $input->getDefault();
             $output->writeln(sprintf('input "%s" is: %s', $key, $values[$key]));
 
         }
