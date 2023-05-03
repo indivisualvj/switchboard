@@ -25,7 +25,6 @@ class CommandInput extends AbstractInput
     {
         $command = implode(' ', $this->getCommand());
         $process = Process::fromShellCommandline($command);
-        $process->setTimeout(10);
         $process->setTty(false);
         $process->start();
 
