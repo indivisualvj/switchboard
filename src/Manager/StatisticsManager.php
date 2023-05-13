@@ -92,10 +92,19 @@ class StatisticsManager
         }
     }
 
+    public function getInputValues($minutes): array
+    {
+        return $this->getInputRepository()->findStatistics($minutes);
+    }
+
+    public function getOutputValues($minutes): array
+    {
+        return $this->getOutputRepository()->findStatistics($minutes);
+    }
+
     public function getInputStatistics($minutes): array
     {
-        $history = $this->getInputRepository()->findStatistics($minutes);
-        return $this->getAverages($history);
+        return $this->getAverages($this->getInputValues($minutes));
     }
 
     public function getRuleStatistics($minutes): array
@@ -106,8 +115,13 @@ class StatisticsManager
 
     public function getOutputStatistics($minutes): array
     {
-        $history = $this->getOutputRepository()->findStatistics($minutes);
-        return $this->getAverages($history);
+        $averages = $this->getAverages($this->getOutputValues($minutes));
+        foreach ($averages as $key => $value) {
+            if (str_ends_with($key, '_disable') || str_ends_with($key, '_stop') || str_ends_with($key, '_close')) {
+                unset($averages[$key]);
+            }
+        }
+        return $averages;
     }
 
     private function getAverages($history): array

@@ -12,6 +12,7 @@ services:
             $inputs: '%inputs%'
             $outputs: '%outputs%'
             $rules: '%rules%'
+            $serializer: '@serializer'
 
     App\Controller\:
         resource: '../src/Controller'
