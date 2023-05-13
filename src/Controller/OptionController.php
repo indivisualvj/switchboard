@@ -32,6 +32,22 @@ class OptionController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/load-winter')]
+    public function loadWinter(): JsonResponse
+    {
+        return new JsonResponse([
+            'yaml' => $this->load('winter.yaml'),
+        ]);
+    }
+
+    #[Route(path: '/load-summer')]
+    public function loadSummer(): JsonResponse
+    {
+        return new JsonResponse([
+            'yaml' => $this->load('summer.yaml'),
+        ]);
+    }
+
     #[Route(path: '/load-outputs')]
     public function loadOutputs(): JsonResponse
     {
@@ -67,6 +83,28 @@ class OptionController extends AbstractController
     {
         $contents = $request->get('contents');
         $this->save('rules.yaml', $contents);
+
+        return new JsonResponse([
+            'success' => true,
+        ]);
+    }
+
+    #[Route(path: '/save-winter')]
+    public function saveWinter(Request $request): JsonResponse
+    {
+        $contents = $request->get('contents');
+        $this->save('winter.yaml', $contents);
+
+        return new JsonResponse([
+            'success' => true,
+        ]);
+    }
+
+    #[Route(path: '/save-summer')]
+    public function saveSummer(Request $request): JsonResponse
+    {
+        $contents = $request->get('contents');
+        $this->save('summer.yaml', $contents);
 
         return new JsonResponse([
             'success' => true,

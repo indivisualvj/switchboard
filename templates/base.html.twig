@@ -20,8 +20,6 @@
                 {% block header %}
                     <div class="controls" data-controller="service">
                         <button class="status" data-service-target="status" data-check-url="{{ path('app_dashboard_checkservice') }}" loading>&#128565;</button>
-{#                        <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_system_idle') }}">Idle</button>#}
-                        <button data-action="click->service#execute:prevent" data-service-target="button" data-url="{{ path('app_system_restart') }}">Restart</button>
                         <div class="nomobile">
                             <button data-action="click->service#edit:prevent"
                                     data-service-target="button"
@@ -41,6 +39,18 @@
                                     data-load-url="{{ path('app_option_loadoutputs') }}"
                                     data-save-url="{{ path('app_option_saveoutputs') }}"
                             >outputs.yaml (Edit)</button>
+                            <button data-action="click->service#edit:prevent"
+                                    data-service-target="button"
+                                    data-file="winter.yaml"
+                                    data-load-url="{{ path('app_option_loadwinter') }}"
+                                    data-save-url="{{ path('app_option_savewinter') }}"
+                            >winter.yaml (Edit)</button>
+                            <button data-action="click->service#edit:prevent"
+                                    data-service-target="button"
+                                    data-file="summer.yaml"
+                                    data-load-url="{{ path('app_option_loadsummer') }}"
+                                    data-save-url="{{ path('app_option_savesummer') }}"
+                            >summer.yaml (Edit)</button>
                             <button data-action="click->service#closeEditor:prevent">Cancel</button>
                             <div id="editor" style="display: none" data-service-target="editor"></div>
                         </div>
